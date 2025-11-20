@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Patient Dashboard{% endblock title %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1 class="dashboard-welcome-title" id="user-welcome">Loading...</h1>
+            <span class="dashboard-welcome-sub">Your healing journey continues today.</span>
+        </div>
+        <div class="dashboard-user-avatar" id="user-initials">--</div>
+    </header>
+
+    <div class="dashboard-layout-grid">
+
+        <!-- MAIN COLUMN -->
+        <div class="dashboard-main-col">
+
+            <!-- UPCOMING SESSION CARD -->
+            <section class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <div class="dashboard-card-title">
+                        <i class="fas fa-spa" style="color: var(--gold-dark)"></i>
+                        Upcoming Session
+                    </div>
+                    <span class="dashboard-status-badge" id="session-status">...</span>
+                </div>
+
+                <div class="dashboard-session-grid">
+                    <div class="dashboard-detail-item">
+                        <span class="dashboard-detail-label">Therapy Name</span>
+                        <span class="dashboard-detail-value" id="session-name">Loading...</span>
+                    </div>
+
+                    <div class="dashboard-detail-item">
+                        <span class="dashboard-detail-label">Date & Time</span>
+                        <span class="dashboard-detail-value" id="session-time">Loading...</span>
+                    </div>
+
+                    <div class="dashboard-detail-item">
+                        <span class="dashboard-detail-label">Duration</span>
+                        <span class="dashboard-detail-value" id="session-duration">...</span>
+                    </div>
+
+                    <div class="dashboard-detail-item">
+                        <span class="dashboard-detail-label">Assigned Practitioner</span>
+                        <span class="dashboard-detail-value" id="session-doctor">...</span>
+                    </div>
+
+                    <div class="dashboard-detail-item">
+                        <span class="dashboard-detail-label">Center / Room</span>
+                        <span class="dashboard-detail-value" id="session-room">...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GUIDELINES CARD -->
+            <section class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <div class="dashboard-card-title">Guidelines</div>
+                </div>
+
+                <div class="dashboard-precaution-box">
+                    <span class="dashboard-precaution-tag" id="precaution-type">...</span>
+                    <ul class="dashboard-list-ul" id="precaution-list">
+                        <li>Loading guidelines...</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="dashboard-actions-bar">
+                <button class="dashboard-btn dashboard-btn-primary">
+                    <i class="fas fa-calendar-alt"></i> View Schedule
+                </button>
+                <button class="dashboard-btn dashboard-btn-secondary">
+                    <i class="fas fa-book-open"></i> Read Guidelines
+                </button>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="dashboard-sidebar-col">
+
+            <!-- RECOVERY SCORE -->
+            <section class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <div class="dashboard-card-title">Recovery Score</div>
+                </div>
+                <div class="dashboard-score-wrapper">
+                    <div class="dashboard-score-circle">
+                        <span class="dashboard-score-text" id="recovery-score">--</span>
+                    </div>
+                    <div class="dashboard-trend-box" id="recovery-trend"></div>
+                    <p class="dashboard-score-note" id="recovery-note">
+                        Loading analysis...
+                    </p>
+                </div>
+            </section>
+
+            <!-- ALERTS -->
+            <section class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <div class="dashboard-card-title">Quick Alerts</div>
+                </div>
+
+                <div id="alerts-container"></div>
+
+                <button class="dashboard-btn dashboard-btn-secondary" style="width: 100%; margin-top: 15px">
+                    Start Feedback
+                </button>
+            </section>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// Your JS stays same as in your code.
+// Just paste here — no changes needed.
+</script>
+
+{% endblock body %}

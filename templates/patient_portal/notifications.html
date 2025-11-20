@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | Panchkalpa</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- 1. Color Palette --- */
+        :root {
+            --gold: #FFD700;
+            --gold-dark: #C8A300;
+            --cream: #FFF8E6;
+            --brown: #78350f;
+            --bg-light: #fff7e5;
+            --text-dark: #2A241F;
+            --muted: #6b5f5a;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(120, 53, 15, 0.08);
+            --radius: 12px;
+
+            /* Notification Specific Colors */
+            --notif-blue-bg: #E3F2FD;
+            --notif-blue-text: #1565C0;
+            /* Session */
+            --notif-red-bg: #FFEBEE;
+            --notif-red-text: #C62828;
+            /* High Alert */
+            --notif-green-bg: #E8F5E9;
+            --notif-green-text: #2E7D32;
+            /* Communication */
+            --notif-gold-bg: #FFFDE7;
+            --notif-gold-text: #F9A825;
+            /* Precaution */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-family: 'Lato', sans-serif;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--brown);
+        }
+
+        /* --- 2. Namespaced Styles: notifications-* --- */
+
+        .notifications-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(120, 53, 15, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .notifications-mark-btn {
+            background: transparent;
+            border: none;
+            color: var(--brown);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .notifications-mark-btn:hover {
+            color: var(--gold-dark);
+        }
+
+        /* Section Headers (New vs Earlier) */
+        .notifications-section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+
+        /* List Container */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Individual Notification Card */
+        .notifications-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid transparent;
+        }
+
+        .notifications-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .notifications-card.unread {
+            background-color: #fffdf5;
+            border-left-color: var(--gold);
+        }
+
+        /* Unread Dot */
+        .notifications-dot {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 10px;
+            height: 10px;
+            background: var(--brown);
+            border-radius: 50%;
+            display: none;
+        }
+
+        .notifications-card.unread .notifications-dot {
+            display: block;
+        }
+
+        /* Icon Box */
+        .notifications-icon-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* Content */
+        .notifications-content {
+            flex-grow: 1;
+            padding-right: 15px;
+        }
+
+        .notifications-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .notifications-body {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .notifications-time {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        /* Type Variants */
+        .type-session .notifications-icon-box {
+            background: var(--notif-blue-bg);
+            color: var(--notif-blue-text);
+        }
+
+        .type-alert .notifications-icon-box {
+            background: var(--notif-red-bg);
+            color: var(--notif-red-text);
+        }
+
+        .type-msg .notifications-icon-box {
+            background: var(--notif-green-bg);
+            color: var(--notif-green-text);
+        }
+
+        .type-precaution .notifications-icon-box {
+            background: var(--notif-gold-bg);
+            color: var(--notif-gold-text);
+        }
+
+        /* Empty State */
+        .notifications-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="notifications-container">
+
+        <header class="notifications-header">
+            <h1>Notifications</h1>
+            <button class="notifications-mark-btn" onclick="markAllRead()">Mark all as read</button>
+        </header>
+
+        <div class="notifications-section-title">New</div>
+        <div class="notifications-list" id="notif-list-new">
+            <div class="notifications-empty">Loading alerts...</div>
+        </div>
+
+        <div class="notifications-section-title">Earlier</div>
+        <div class="notifications-list" id="notif-list-earlier">
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNotifications();
+        });
+
+        // 2. Fetch Logic (GET)
+        function fetchNotifications() {
+            // We don't strictly need ?patient_id if using request.user in Django
+            fetch('/api/notifications/')
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to load notifications");
+                    return response.json();
+                })
+                .then(data => {
+                    renderNotifications(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('notif-list-new').innerHTML =
+                        '<div class="notifications-empty" style="color:var(--notif-red-text);">Unable to connect to server.</div>';
+                });
+        }
+
+        // 3. Render Logic (Same as before, but handles dynamic data)
+        function renderNotifications(data) {
+            const newContainer = document.getElementById('notif-list-new');
+            const earlierContainer = document.getElementById('notif-list-earlier');
+
+            newContainer.innerHTML = '';
+            earlierContainer.innerHTML = '';
+
+            if (data.length === 0) {
+                newContainer.innerHTML = '<div class="notifications-empty">No notifications yet.</div>';
+                return;
+            }
+
+            let newCount = 0;
+
+            data.forEach(item => {
+                // Determine Icon & Class based on Type
+                let iconClass = 'fa-bell';
+                let typeClass = 'type-msg';
+
+                switch (item.type) {
+                    case 'session':
+                        iconClass = 'fa-calendar-check';
+                        typeClass = 'type-session';
+                        break;
+                    case 'alert':
+                        iconClass = 'fa-exclamation-triangle';
+                        typeClass = 'type-alert';
+                        break;
+                    case 'precaution':
+                        iconClass = 'fa-glass-water';
+                        typeClass = 'type-precaution';
+                        break;
+                    case 'msg':
+                        iconClass = 'fa-user-md';
+                        typeClass = 'type-msg';
+                        break;
+                }
+
+                const html = `
+                <div class="notifications-card ${typeClass} ${item.isRead ? '' : 'unread'}" 
+                     onclick="handleNotificationClick('${item.link}', ${item.id})">
+                    <div class="notifications-dot"></div>
+                    <div class="notifications-icon-box">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <div class="notifications-content">
+                        <div class="notifications-title">${item.title}</div>
+                        <div class="notifications-body">${item.message}</div>
+                        <div class="notifications-time">${item.time}</div>
+                    </div>
+                </div>
+            `;
+
+                if (!item.isRead) {
+                    newContainer.innerHTML += html;
+                    newCount++;
+                } else {
+                    earlierContainer.innerHTML += html;
+                }
+            });
+
+            if (newCount === 0) {
+                newContainer.innerHTML = '<div class="notifications-empty">No new notifications</div>';
+            }
+        }
+
+        // 4. Interaction: Mark Single Read & Navigate
+        function handleNotificationClick(link, id) {
+            // Send POST request to mark as read
+            fetch(`/api/notifications/${id}/mark-read/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            }).then(() => {
+                // Navigate after marking read
+                if (link && link !== '#') {
+                    window.location.href = link;
+                } else {
+                    // If no link, just refresh list to show it moved to "Earlier"
+                    fetchNotifications();
+                }
+            }).catch(err => console.error("Error marking read:", err));
+        }
+
+        // 5. Interaction: Mark All Read
+        function markAllRead() {
+            fetch('/api/notifications/mark-all-read/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // UI Update: Move everything to "Earlier" instantly for better UX
+                        const newContainer = document.getElementById('notif-list-new');
+                        const earlierContainer = document.getElementById('notif-list-earlier');
+
+                        if (newContainer.children.length > 0 && !newContainer.querySelector('.notifications-empty')) {
+                            // Remove unread styling
+                            Array.from(newContainer.children).forEach(child => {
+                                child.classList.remove('unread');
+                            });
+                            earlierContainer.innerHTML = newContainer.innerHTML + earlierContainer.innerHTML;
+                            newContainer.innerHTML = '<div class="notifications-empty">No new notifications</div>';
+                        }
+                    }
+                })
+                .catch(err => console.error("Error marking all read:", err));
+        }
+
+        // 6. Helper: Get Django CSRF Token (Crucial for POST requests)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+
+</body>
+
+</html>

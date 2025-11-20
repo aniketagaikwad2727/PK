@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password | Panchkalpa</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- 1. Shared Color Palette --- */
+        :root {
+            --gold: #FFD700;
+            --gold-dark: #C8A300;
+            --cream: #FFF8E6;
+            --brown: #78350f;
+            --bg-light: #fff7e5;
+            --text-dark: #2A241F;
+            --muted: #6b5f5a;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(120, 53, 15, 0.08);
+            --radius: 12px;
+        }
+
+        /* --- 2. Global Styles --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-family: 'Lato', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* --- 3. Card Container --- */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--white);
+            padding: 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+        }
+
+        /* --- 4. Typography --- */
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--brown);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* --- 5. Form Elements --- */
+        label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 6px;
+            margin-top: 15px;
+        }
+        label:first-of-type { margin-top: 0; }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            background-color: #fffcf5; /* Subtle cream input bg */
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            background-color: var(--white);
+        }
+
+        /* --- 6. Button Styling (Brown with Shine) --- */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--brown);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-family: 'Lato', sans-serif;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #5a270b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(120, 53, 15, 0.2);
+        }
+
+        /* Shine Effect */
+        .submit-btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .submit-btn:hover::before { left: 100%; }
+
+        /* --- 7. Back Link --- */
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--brown);
+            text-decoration: underline;
+        }
+        
+        .back-link i { margin-right: 5px; }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="title">Reset Password</div>
+        <div class="subtitle">Secure your healing journey.<br>Enter your email to verify identity.</div>
+
+        <form id="resetForm">
+            <label>Registered Email</label>
+            <input type="email" placeholder="your@email.com" required>
+
+            <label>Verification OTP</label>
+            <input type="text" placeholder="Enter 6-digit code">
+
+            <label>New Password</label>
+            <input type="password" placeholder="Min. 8 characters">
+
+            <label>Confirm Password</label>
+            <input type="password" placeholder="Re-enter password">
+
+            <button type="submit" class="submit-btn">Update Password</button>
+        </form>
+
+        <a href="login.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Login</a>
+
+    </div>
+
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('.submit-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                alert("Password updated successfully!");
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
