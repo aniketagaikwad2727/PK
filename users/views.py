@@ -90,3 +90,7 @@ from django.contrib.auth.decorators import login_required
 def patient_dashboard(request):
     return render(request, "patient_portal/patient-dashboard.html")
     
+from django.shortcuts import render
+
+def landing_page(request):
+    return render(request, 'landing.html')
