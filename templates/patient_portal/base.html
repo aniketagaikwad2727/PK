@@ -2,13 +2,19 @@
 <html lang="en">
 
 <head>
+    {% load static %}
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title> {% block title %}{% endblock title %} | Panchkalpa </title>
-    <link rel="stylesheet" href="/static/css/base.css">
+
+    <title>{% block title %}{% endblock title %} | Panchkalpa</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 
 <body>
@@ -19,32 +25,18 @@
         <!-- LOGO -->
         <div>
             <div class="logo">
-                <img src="/static/assets/panchkalpa-logo-trans.png" alt="Logo">
+                <img src="{% static 'assets/panchkalpa-logo-trans.png' %}" alt="Logo">
             </div>
 
             <!-- NAV BUTTONS -->
             <div class="nav-section">
-                <div class="nav-btn">
-                    <i class="fa-brands fa-dashcube"></i>Dashboard
-                </div>
-                <div class="nav-btn">
-                    <i class="fa-solid fa-video"></i>My Sessions
-                </div>
-                <div class="nav-btn">
-                    <i class="fa-regular fa-calendar-check"></i>Therapy Progress
-                </div>
-                <div class="nav-btn">
-                    <i class="fa-solid fa-chalkboard-user"></i>Precautions & Instructions
-                </div>
-                <div class="nav-btn">
-                    <i class="fa-solid fa-comment"></i>Feedback & Symptoms Tracker
-                </div>
-                <div class="nav-btn">
-                    <i class="fa-solid fa-bell"></i>Notifications Centre
-                </div>
-                <div class="nav-btn">
-                    <i class="fa-solid fa-address-card"></i>Profile & Medical Details
-                </div>
+                <div class="nav-btn"><i class="fa-brands fa-dashcube"></i> Dashboard</div>
+                <div class="nav-btn"><i class="fa-solid fa-video"></i> My Sessions</div>
+                <div class="nav-btn"><i class="fa-regular fa-calendar-check"></i> Therapy Progress</div>
+                <div class="nav-btn"><i class="fa-solid fa-chalkboard-user"></i> Precautions & Instructions</div>
+                <div class="nav-btn"><i class="fa-solid fa-comment"></i> Feedback & Symptoms Tracker</div>
+                <div class="nav-btn"><i class="fa-solid fa-bell"></i> Notifications Centre</div>
+                <div class="nav-btn"><i class="fa-solid fa-address-card"></i> Profile & Medical Details</div>
             </div>
         </div>
 
@@ -58,14 +50,14 @@
         </div>
     </div>
 
-
     <!-- MAIN CONTENT -->
     <div class="main-content">
         {% block body %}{% endblock body %}
     </div>
-<script>
+
+    <!-- SCRIPT BLOCK (correct, no error) -->
     {% block script %}{% endblock script %}
-</script>
+
 </body>
 
 </html>

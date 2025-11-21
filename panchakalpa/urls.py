@@ -19,4 +19,6 @@ urlpatterns = [
 
     # Patient dashboard
     path('patient/', include('patients.urls')),
+    path('panchkalpa/', include('patients.urls')),
+
 ]

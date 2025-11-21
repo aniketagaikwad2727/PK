@@ -7,8 +7,44 @@ class Patient(models.Model):
     age = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=10, blank=True)
     address = models.TextField(blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.full_name
+
+
+class Therapy(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Therapist(models.Model):
+    name = models.CharField(max_length=100)
+    specialty = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PatientAppointment(models.Model):
+    patient_name = models.CharField(max_length=100)
+    therapy = models.ForeignKey(Therapy, on_delete=models.CASCADE)
+    therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE)
+    date = models.DateField()
+    time = models.CharField(max_length=20)   # <-- FIXED
+
+    def __str__(self):
+        return f"{self.patient_name} - {self.therapy} - {self.date}"
+
+
+class TherapistAppointment(models.Model):
+    therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE)
+    patient_name = models.CharField(max_length=100)
+    therapy = models.ForeignKey(Therapy, on_delete=models.CASCADE)
+    date = models.DateField()
+    time = models.CharField(max_length=20)   # <-- FIXED
+
+    def __str__(self):
+        return f"{self.therapist} - {self.patient_name} - {self.date}"
