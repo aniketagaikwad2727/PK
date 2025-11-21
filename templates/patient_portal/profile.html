@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | Panchkalpa</title>
-    
+
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/profile.css">
@@ -26,18 +28,22 @@
 
         <!-- 2. Navigation Links -->
         <div class="dashboard-nav-links-group">
-            <a href="dashboard.html" class="dashboard-nav-item-button active"><i class="fa-brands fa-dashcube"></i> Dashboard</a>
-            <a href="appointments.html" class="dashboard-nav-item-button"><i class="fa-solid fa-video"></i> Appointments</a>
-            <a href="progress.html" class="dashboard-nav-item-button"><i class="fa-regular fa-calendar-check"></i> Progress</a>
+            <a href="dashboard.html" class="dashboard-nav-item-button active"><i class="fa-brands fa-dashcube"></i>
+                Dashboard</a>
+            <a href="appointments.html" class="dashboard-nav-item-button"><i class="fa-solid fa-video"></i>
+                Appointments</a>
+            <a href="progress.html" class="dashboard-nav-item-button"><i class="fa-regular fa-calendar-check"></i>
+                Progress</a>
             <a href="#" class="dashboard-nav-item-button"><i class="fa-solid fa-file-invoice"></i> Billing</a>
         </div>
 
         <!-- 3. Profile & Settings -->
         <div class="dashboard-nav-profile-section">
-            
+
             <!-- Notifications (Bell) Wrapper -->
             <div class="notify-wrapper">
-                <button class="dashboard-nav-item-button" style="background:none; border:none; cursor:pointer; padding: 10px;" onclick="toggleNotifyPopup()">
+                <button class="dashboard-nav-item-button"
+                    style="background:none; border:none; cursor:pointer; padding: 10px;" onclick="toggleNotifyPopup()">
                     <i class="fa-solid fa-bell" style="font-size:1.2rem; color:var(--theme-gold);"></i>
                     <!-- Unread Badge -->
                     <span class="notify-badge-count" id="notify-badge" style="display:none;">0</span>
@@ -70,13 +76,14 @@
 
     <!-- MAIN PROFILE CONTAINER -->
     <div class="profile-main-container" id="profileContainer">
-        
+
         <div class="profile-content-card">
-            
+
             <!-- 1. HEADER (Photo, Name, Age, Gender) -->
             <div class="profile-header-section">
                 <div class="profile-photo-wrapper">
-                    <img src="https://via.placeholder.com/150" alt="Profile Photo" class="profile-avatar-img" id="view-photo">
+                    <img src="https://via.placeholder.com/150" alt="Profile Photo" class="profile-avatar-img"
+                        id="view-photo">
                     <label class="profile-upload-overlay">
                         <i class="fas fa-camera"></i>
                         <input type="file" style="display:none;" id="input-photo">
@@ -86,7 +93,8 @@
                 <div class="profile-basic-info">
                     <!-- NAME -->
                     <h1 class="profile-value-text" id="view-name">Loading...</h1>
-                    <input type="text" class="profile-edit-input" id="input-name" style="font-size:1.5rem; text-align:center; margin-bottom:10px;">
+                    <input type="text" class="profile-edit-input" id="input-name"
+                        style="font-size:1.5rem; text-align:center; margin-bottom:10px;">
 
                     <div class="profile-demographics-row">
                         <div class="profile-demographics-item">
@@ -109,11 +117,11 @@
 
             <!-- 2. DETAILS GRID -->
             <div class="profile-details-grid">
-                
+
                 <!-- Personal Info Column -->
                 <div class="profile-column">
                     <h3 class="profile-section-title"><i class="fas fa-address-book"></i> Personal Info</h3>
-                    
+
                     <div class="profile-info-group">
                         <label class="profile-label">Email Address</label>
                         <div class="profile-value-text" id="view-email">--</div>
@@ -130,11 +138,12 @@
                 <!-- Health Details Column -->
                 <div class="profile-column">
                     <h3 class="profile-section-title"><i class="fas fa-heartbeat"></i> Health Details</h3>
-                    
+
                     <div class="profile-info-group">
                         <label class="profile-label" style="color:#c62828;">Allergies</label>
                         <div class="profile-value-text" id="view-allergies">--</div>
-                        <input type="text" class="profile-edit-input" id="input-allergies" placeholder="e.g. Peanuts, Dust">
+                        <input type="text" class="profile-edit-input" id="input-allergies"
+                            placeholder="e.g. Peanuts, Dust">
                     </div>
 
                     <div class="profile-info-group">
@@ -158,11 +167,11 @@
             <button class="profile-btn btn-edit" onclick="enableEditMode()">
                 <i class="fas fa-pen"></i> Edit Profile
             </button>
-            
+
             <button class="profile-btn btn-cancel" onclick="cancelEditMode()">
                 <i class="fas fa-times"></i> Cancel
             </button>
-            
+
             <button class="profile-btn btn-save" onclick="saveProfileData()">
                 <i class="fas fa-save"></i> Save Changes
             </button>
@@ -182,7 +191,7 @@
             try {
                 // In real app: const res = await fetch('/api/patient/profile/');
                 // const data = await res.json();
-                
+
                 // MOCK DATA FALLBACK
                 const data = {
                     name: "Aniket Sharma",
@@ -268,11 +277,11 @@
 
                 // SIMULATED DELAY & SUCCESS
                 await new Promise(r => setTimeout(r, 1000));
-                
+
                 // Update UI with new data (Mocking the backend response)
                 updatedData.photo = document.getElementById('view-photo').src; // Keep old photo for demo
                 populateUI(updatedData);
-                
+
                 alert("Profile Updated Successfully!");
                 document.getElementById('profileContainer').classList.remove('mode-edit');
 
@@ -302,4 +311,5 @@
     </script>
 
 </body>
+
 </html>
