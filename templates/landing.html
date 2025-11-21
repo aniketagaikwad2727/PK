@@ -9,7 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
 
     <style>
         /* --- 1. Shared Color Palette --- */
@@ -26,24 +28,32 @@
             --radius: 12px;
         }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: 'Lato', sans-serif;
             background-color: var(--bg-light);
             color: var(--text-dark);
-            /* Sidebar width calculation */
-            margin-left: 260px; 
+            /* DEFAULT STATE: Sidebar is hidden, so 0 margin */
+            margin-left: 0;
             transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             overflow-x: hidden;
         }
 
-        /* --- COLLAPSED STATE (JS Toggles This) --- */
-        body.sidebar-collapsed {
-            margin-left: 0;
+        /* --- ACTIVE STATE (JS Toggles This) --- */
+        body.sidebar-active {
+            margin-left: 260px;
+            /* Push content when sidebar opens */
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Playfair Display', serif;
             color: var(--brown);
         }
@@ -51,7 +61,8 @@
         /* --- 2. Sidebar Styling --- */
         .sidebar {
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 260px;
             height: 100vh;
             background: var(--brown);
@@ -60,12 +71,14 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
+            /* DEFAULT STATE: Hidden off-screen */
+            transform: translateX(-100%);
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Sidebar hidden state */
-        body.sidebar-collapsed .sidebar {
-            transform: translateX(-100%);
+        /* Sidebar Visible State */
+        body.sidebar-active .sidebar {
+            transform: translateX(0);
         }
 
         .logo {
@@ -102,7 +115,8 @@
             font-family: 'Lato', sans-serif;
         }
 
-        .nav-item a:hover, .nav-item a.active {
+        .nav-item a:hover,
+        .nav-item a.active {
             background: rgba(255, 215, 0, 0.15);
             color: var(--gold);
             transform: translateX(5px);
@@ -112,7 +126,8 @@
         .sidebar-toggle-btn {
             position: fixed;
             top: 20px;
-            left: 280px; /* 260px sidebar + 20px gap */
+            left: 20px;
+            /* Default position when sidebar is closed */
             z-index: 1050;
             background: var(--gold);
             color: var(--brown);
@@ -120,7 +135,7 @@
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s;
             display: flex;
@@ -133,9 +148,10 @@
             background: #ffe066;
         }
 
-        /* Move button when collapsed */
-        body.sidebar-collapsed .sidebar-toggle-btn {
-            left: 20px;
+        /* Move button when sidebar is open */
+        body.sidebar-active .sidebar-toggle-btn {
+            left: 280px;
+            /* 260px sidebar width + 20px gap */
         }
 
         /* --- 3. Button Styling --- */
@@ -164,11 +180,17 @@
         .btn-cta::before {
             content: "";
             position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(120deg, transparent, rgba(255, 215, 0, 0.2), transparent);
             transition: 0.5s;
         }
-        .btn-cta:hover::before { left: 100%; }
+
+        .btn-cta:hover::before {
+            left: 100%;
+        }
 
         .btn-outline-custom {
             border: 1px solid var(--white);
@@ -180,6 +202,7 @@
             text-decoration: none;
             display: inline-block;
         }
+
         .btn-outline-custom:hover {
             background: var(--white);
             color: var(--brown);
@@ -196,7 +219,8 @@
 
         .hero::after {
             content: "";
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background: linear-gradient(90deg, rgba(42, 36, 31, 0.95), rgba(42, 36, 31, 0.4));
         }
 
@@ -215,14 +239,22 @@
 
         .hero p {
             font-size: 1.1rem;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 2rem;
         }
 
         /* --- 5. Components --- */
-        section { padding: 5rem 0; }
-        .section-head { margin-bottom: 3rem; }
-        .muted { color: var(--muted); }
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-head {
+            margin-bottom: 3rem;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
 
         .feature-card {
             background: var(--white);
@@ -233,7 +265,11 @@
             border: 1px solid rgba(255, 215, 0, 0.2);
             transition: transform 0.3s;
         }
-        .feature-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
 
         .card-therapy {
             border: none;
@@ -244,8 +280,15 @@
             background: var(--white);
             height: 100%;
         }
-        .card-therapy:hover { transform: translateY(-5px); }
-        .card-therapy img { height: 220px; object-fit: cover; }
+
+        .card-therapy:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-therapy img {
+            height: 220px;
+            object-fit: cover;
+        }
 
         /* --- 6. Contact --- */
         .contact-card {
@@ -254,27 +297,54 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
+
         .form-control {
-            background-color: #fffcf5; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; font-family: 'Lato', sans-serif;
+            background-color: #fffcf5;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Lato', sans-serif;
         }
+
         .form-control:focus {
-            background-color: var(--white); border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            background-color: var(--white);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
         }
 
         /* --- 7. Footer --- */
         footer {
-            background: #1a1512; color: rgba(255,255,255,0.7); padding: 4rem 0 2rem;
+            background: #1a1512;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4rem 0 2rem;
         }
-        footer h5, footer h6 { color: var(--white); }
-        footer a { color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; }
-        footer a:hover { color: var(--gold); }
+
+        footer h5,
+        footer h6 {
+            color: var(--white);
+        }
+
+        footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--gold);
+        }
 
         /* --- 8. Responsive --- */
         @media (max-width: 992px) {
-            body { margin-left: 0; padding-top: 80px; }
-            
+            body {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+
             /* Hide the slider button on mobile as sidebar changes layout */
-            .sidebar-toggle-btn { display: none; }
+            .sidebar-toggle-btn {
+                display: none;
+            }
 
             .sidebar {
                 width: 100%;
@@ -285,20 +355,49 @@
                 padding: 0 20px;
                 border-right: none;
                 border-bottom: 1px solid rgba(200, 163, 0, 0.2);
+                /* Reset transformation for mobile header style */
+                transform: translateX(0);
+                position: fixed;
+                top: 0;
             }
 
-            .logo { height: 50px; margin-bottom: 0; }
-            .logo img { height: 100px; }
+            .logo {
+                height: 50px;
+                margin-bottom: 0;
+            }
 
-            .sidebar ul { display: flex; gap: 10px; margin-bottom: 0; }
-            .nav-item { margin-bottom: 0; }
-            .nav-item a { padding: 8px 12px; font-size: 0.9rem; }
-            .hero h1 { font-size: 2.5rem; }
+            .logo img {
+                height: 100px;
+            }
+
+            .sidebar ul {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 0;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+            }
+
+            .nav-item a {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
         }
 
         @media (max-width: 576px) {
-             .sidebar ul { display: none; } 
-             .hero h1 { font-size: 2rem; }
+            .sidebar ul {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
@@ -311,7 +410,7 @@
 
     <nav class="sidebar">
         <div class="logo">
-            <img src="/static/assets/panchkalpa-logo-trans.png" alt="Panchkalpa">
+            <img src="/PK/static/assets/panchkalpa-logo-trans.png" alt="Panchkalpa">
         </div>
 
         <ul>
@@ -329,8 +428,9 @@
             <div class="row">
                 <div class="col-lg-8">
                     <h1>Restore Balance.<br>Detoxify <span style="color:var(--gold)">Deeply.</span></h1>
-                    <p>Traditional Panchakarma therapies guided by certified practitioners in a serene, clinically-monitored environment. Rediscover your natural rhythm.</p>
-                    
+                    <p>Traditional Panchakarma therapies guided by certified practitioners in a serene,
+                        clinically-monitored environment. Rediscover your natural rhythm.</p>
+
                     <div class="d-flex gap-3 flex-wrap">
                         <a href="#contact" class="btn-cta">Book Consultation</a>
                         <a href="#therapies" class="btn-outline-custom">Explore Therapies</a>
@@ -348,25 +448,32 @@
     <section id="about" class="container">
         <div class="row align-items-center gy-5">
             <div class="col-lg-6" data-aos="fade-right">
+
                 <h2 class="section-head">What is Panchakarma?</h2>
-                <p class="muted">Panchakarma is a classical Ayurvedic detoxification treatment designed to remove deep-seated toxins and restore the body's natural balance. It includes five primary procedures targeted to cleanse specific systems and doshas.</p>
-                
+                <p class="muted">Panchakarma is a classical Ayurvedic detoxification treatment designed to remove
+                    deep-seated toxins and restore the body's natural balance. It includes five primary procedures
+                    targeted to cleanse specific systems and doshas.</p>
+
                 <ul class="list-unstyled mt-4 d-flex flex-column gap-3">
+
                     <li class="d-flex align-items-center gap-3">
                         <i class="fas fa-check-circle" style="color:var(--gold-dark)"></i>
                         <span>Personalized assessment and preparatory regimen</span>
                     </li>
+
                     <li class="d-flex align-items-center gap-3">
                         <i class="fas fa-check-circle" style="color:var(--gold-dark)"></i>
                         <span>Supervised by trained Ayurvedic doctors</span>
                     </li>
+
                     <li class="d-flex align-items-center gap-3">
                         <i class="fas fa-check-circle" style="color:var(--gold-dark)"></i>
                         <span>Post-procedure diet & lifestyle guidance</span>
                     </li>
+
                 </ul>
             </div>
-            
+
             <div class="col-lg-6" data-aos="fade-left">
                 <div class="row g-3">
                     <div class="col-6">
@@ -375,18 +482,21 @@
                             <h5>Certified Experts</h5>
                         </div>
                     </div>
+
                     <div class="col-6">
                         <div class="feature-card text-center">
                             <i class="fas fa-leaf fa-2x mb-3" style="color:var(--brown)"></i>
                             <h5>Holistic Care</h5>
                         </div>
                     </div>
+
                     <div class="col-6">
                         <div class="feature-card text-center">
                             <i class="fas fa-spa fa-2x mb-3" style="color:var(--brown)"></i>
                             <h5>Private Suites</h5>
                         </div>
                     </div>
+
                     <div class="col-6">
                         <div class="feature-card text-center">
                             <i class="fas fa-apple-alt fa-2x mb-3" style="color:var(--brown)"></i>
@@ -408,36 +518,64 @@
             <div class="row g-4">
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
                     <div class="card card-therapy">
-                        <img src="/static/assets/vamana.png" class="w-100" alt="Vamana">
+                        <img src="/PK/static/assets/vamana.png" class="w-100" alt="Vamana">
                         <div class="card-body p-4">
                             <h5>Vamana</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2">Therapeutic Emesis</p>
-                            <p class="muted small">Medicated emesis to remove Kapha-related toxins from the upper respiratory tract.</p>
+                            <p class="muted small">Medicated emesis to remove Kapha-related toxins from the upper
+                                respiratory tract.</p>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
                     <div class="card card-therapy">
-                        <img src="/static/assets/virechna.png" class="w-100" alt="Virechana">
+                        <img src="/PK/static/assets/virechna.png" class="w-100" alt="Virechana">
                         <div class="card-body p-4">
                             <h5>Virechana</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2">Purgation Therapy</p>
-                            <p class="muted small">Cleansing Pitta toxins from the liver and gallbladder through medicated purgation.</p>
+                            <p class="muted small">Cleansing Pitta toxins from the liver and gallbladder through
+                                medicated purgation.</p>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="300">
                     <div class="card card-therapy">
-                        <img src="/static/assets/basti.png" class="w-100" alt="Basti">
+                        <img src="/PK/static/assets/basti.png" class="w-100" alt="Basti">
                         <div class="card-body p-4">
                             <h5>Basti</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2">Medicated Enema</p>
-                            <p class="muted small">The mother of all treatments. Balances Vata through medicated oil/decoction enemas.</p>
+                            <p class="muted small">The mother of all treatments. Balances Vata through medicated
+                                oil/decoction enemas.</p>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="card card-therapy">
+                        <img src="/PK/static/assets/basya.png" class="w-100" alt="Nasya">
+                        <div class="p-3">
+                            <h5>Nasya </h5>
+                            <p class="small text-uppercase text-warning fw-bold mb-2"> Nasal Administration</p>
+                            <p class="muted">Administration of medicated oils to cleanse the head, sinuses and improve sensory clarity.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="250">
+                    <div class="card card-therapy">
+                        <img src="/PK/static/assets/raktmokshana.png" class="w-100" alt="Raktamokshana">
+                        <div class="p-3">
+                            <h5>Raktamokshana</h5>
+                            <p class="small text-uppercase text-warning fw-bold mb-2"> Blood Purification</p>
+                            <p class="muted">Targeted blood purification for conditions caused by Pitta imbalance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
     </section>
 
     <section id="contact" class="container">
@@ -445,6 +583,7 @@
             <div class="col-lg-6" data-aos="fade-right">
                 <h3>Get in Touch</h3>
                 <p class="muted mb-4">Have questions? Message us for a free preliminary consultation.</p>
+
                 <div class="contact-card">
                     <form>
                         <div class="mb-3">
@@ -463,11 +602,15 @@
                     </form>
                 </div>
             </div>
+
             <div class="col-lg-6" data-aos="fade-left">
                 <div class="ps-lg-5">
                     <h5 class="mb-4">Visit Our Center</h5>
                     <div class="rounded overflow-hidden shadow-sm">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d121059.0436043475!2d73.7929269362657!3d18.52461645526026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf2e67461101%3A0x828d43bf9d9ee121!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1677764823995!5m2!1sen!2sin" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3784.9015180848364!2d73.89300367596998!3d18.4427800715443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c07cabcb7165%3A0x416c45e42c0467be!2sSinhgad%20Academy%20Of%20Engineering!5e0!3m2!1sen!2sin!4v1763710567159!5m2!1sen!2sin"
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
@@ -508,20 +651,21 @@
     <script>
         AOS.init({ duration: 800, once: true });
 
-        // --- SLIDER TOGGLE LOGIC ---
+        // --- UPDATED SLIDER LOGIC ---
         const toggleBtn = document.getElementById('sidebarToggle');
         const body = document.body;
 
         toggleBtn.addEventListener('click', () => {
-            body.classList.toggle('sidebar-collapsed');
-            
-            // Optional: Change icon based on state
+            // Toggle the active state (default is hidden)
+            body.classList.toggle('sidebar-active');
+
+            // Change icon based on state
             const icon = toggleBtn.querySelector('i');
-            if (body.classList.contains('sidebar-collapsed')) {
+            if (body.classList.contains('sidebar-active')) {
                 icon.classList.remove('fa-bars');
-                icon.classList.add('fa-arrow-right');
+                icon.classList.add('fa-arrow-left');
             } else {
-                icon.classList.remove('fa-arrow-right');
+                icon.classList.remove('fa-arrow-left');
                 icon.classList.add('fa-bars');
             }
         });
@@ -548,4 +692,5 @@
         });
     </script>
 </body>
+
 </html>
