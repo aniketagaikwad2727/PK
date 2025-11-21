@@ -307,7 +307,10 @@
                 <input type="email" placeholder="your@email.com" required>
 
                 <label>Create Password</label>
-                <input type="password" placeholder="Minimum 8 characters" required>
+                <input id="password1" type="password" placeholder="Minimum 8 characters" required>
+
+                <label>confirm Password</label>
+                <input id="password2" type="password" placeholder="Minimum 8 characters" required>
 
                 <label>I am a...</label>
                 <select name="Role" id="Role">
@@ -327,6 +330,13 @@
     const signupTab = document.getElementById("signupTab");
     const loginForm = document.getElementById("loginForm");
     const signupForm = document.getElementById("signupForm");
+
+    // const confpass1 = getElementById("password1");
+    // const confpass2 = getElementById("password2");
+
+    // if (!confpass1 === confpass2) {
+    //     alert("Password and Confirm password must be same");
+    // }
 
     // Switch to Login
     loginTab.addEventListener("click", () => {

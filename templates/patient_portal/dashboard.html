@@ -4,555 +4,708 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panchkarma Patient Dashboard</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap"
-        rel="stylesheet">
+    <title>Patient Dashboard | Panchkalpa</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- 1. Color Scheme --- */
+        /* --- 1. GLOBAL THEME VARIABLES --- */
         :root {
-            --gold: #FFD700;
-            --gold-dark: #C8A300;
-            --cream: #FFF8E6;
-            --brown: #78350f;
-            --bg-light: #fff7e5;
-            --text-dark: #2A241F;
-            --muted: #6b5f5a;
-            --white: #ffffff;
-            --shadow: 0 4px 15px rgba(120, 53, 15, 0.08);
-            --radius: 12px;
+            --theme-gold: #FFD700;
+            --theme-gold-dark: #C8A300;
+            --theme-cream: #FFF8E6;
+            --theme-brown: #78350f;
+            --theme-bg-light: #fff7e5;
+            --theme-text-dark: #2A241F;
+            --theme-muted: #6b5f5a;
+            --theme-white: #ffffff;
+            --theme-shadow: 0 4px 15px rgba(120, 53, 15, 0.08);
+            --theme-radius: 12px;
+            --theme-nav-height: 80px;
+
+            /* Notification Specific Colors */
+            --notify-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            --notify-blue-bg: #E3F2FD; --notify-blue-text: #1565C0;
+            --notify-red-bg: #FFEBEE; --notify-red-text: #C62828;
+            --notify-green-bg: #E8F5E9; --notify-green-text: #2E7D32;
+            --notify-gold-bg: #FFFDE7; --notify-gold-text: #F9A825;
         }
 
-        /* --- 2. Reset & Base Styles --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* --- 2. BASE LAYOUT STYLES --- */
         body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            margin: 0;
             font-family: 'Lato', sans-serif;
-            line-height: 1.6;
-            padding: 20px;
+            background-color: var(--theme-bg-light);
+            color: var(--theme-text-dark);
+            overflow-x: hidden;
+            padding-top: var(--theme-nav-height);
         }
 
-        h1,
-        h2,
-        h3 {
+        h1, h2, h3, h4, h5 {
             font-family: 'Playfair Display', serif;
-            color: var(--brown);
+            color: var(--theme-brown);
         }
 
-        /* --- 3. Namespace: dashboard-* --- */
+        /* --- 3. DASHBOARD NAVIGATION BAR --- */
+        .dashboard-navbar-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: var(--theme-nav-height);
+            background: var(--theme-brown);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
 
-        .dashboard-container {
-            max-width: 1200px;
+        .dashboard-logo-wrapper {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-logo-wrapper img {
+            height: 120px;
+            width: auto;
+            object-fit: contain;
+            margin-top: 10px;
+        }
+
+        .dashboard-nav-links-group {
+            display: flex;
+            gap: 10px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .dashboard-nav-item-button {
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-nav-item-button i { color: var(--theme-gold); }
+
+        .dashboard-nav-item-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--theme-gold);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-nav-item-button.active {
+            background: var(--theme-gold);
+            color: var(--theme-brown);
+            font-weight: 700;
+        }
+        .dashboard-nav-item-button.active i { color: var(--theme-brown); }
+
+        .dashboard-nav-profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dashboard-profile-summary-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 15px 6px 6px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .dashboard-profile-summary-pill:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: var(--theme-gold);
+        }
+
+        .dashboard-profile-icon-circle {
+            width: 32px; height: 32px;
+            background: var(--theme-gold);
+            color: var(--theme-brown);
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .dashboard-profile-name-text {
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .dashboard-logout-action {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            background: none; border: none;
+        }
+        .dashboard-logout-action:hover { color: #ff6b6b; }
+
+        /* --- 4. NOTIFICATION COMPONENT STYLES (Prefixed with notify-) --- */
+        .notify-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notify-badge-count {
+            position: absolute; top: 5px; right: 5px;
+            background: var(--notify-red-text); color: white;
+            font-size: 0.6rem; font-weight: bold;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid white;
+        }
+
+        .notify-popup-window {
+            position: absolute;
+            top: 50px; 
+            right: -80px; 
+            width: 360px; 
+            background: var(--theme-white);
+            border-radius: 12px;
+            box-shadow: var(--notify-shadow);
+            border: 1px solid rgba(120, 53, 15, 0.1);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .notify-popup-window.notify-is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .notify-header-bar {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #fffbf2;
+            border-radius: 12px 12px 0 0;
+        }
+        .notify-header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem; color: var(--theme-brown); margin: 0;
+        }
+        .notify-action-link {
+            font-size: 0.75rem; text-decoration: underline;
+            color: var(--theme-muted); cursor: pointer; background: none; border: none;
+        }
+
+        .notify-content-scroll-area {
+            max-height: 350px; 
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .notify-list-item {
+            padding: 10px;
+            border-radius: 8px;
+            display: flex; gap: 10px;
+            transition: background 0.2s;
+            cursor: pointer;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .notify-list-item:hover { background-color: var(--theme-bg-light); }
+        
+        .notify-list-item.notify-state-unread {
+            background-color: #fffdf5;
+            border-left: 3px solid var(--theme-gold);
+        }
+
+        .notify-type-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; flex-shrink: 0;
+        }
+        .notify-color-session { background: var(--notify-blue-bg); color: var(--notify-blue-text); }
+        .notify-color-alert { background: var(--notify-red-bg); color: var(--notify-red-text); }
+        .notify-color-msg { background: var(--notify-green-bg); color: var(--notify-green-text); }
+        .notify-color-precaution { background: var(--notify-gold-bg); color: var(--notify-gold-text); }
+
+        .notify-item-text h4 { font-size: 0.85rem; font-weight: 700; margin: 0 0 2px 0; color: var(--theme-text-dark); }
+        .notify-item-text p { font-size: 0.75rem; color: var(--theme-muted); margin: 0; line-height: 1.3; }
+        .notify-timestamp { font-size: 0.65rem; color: #bbb; margin-top: 4px; display: block; }
+
+        /* --- 5. DASHBOARD MAIN CONTENT STYLES --- */
+        .dashboard-main-container {
+            padding: 40px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Header */
-        .dashboard-header {
+        .dashboard-page-header {
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(120, 53, 15, 0.1);
+            align-items: end;
         }
-
-        .dashboard-welcome-title {
-            font-size: 1.8rem;
-        }
-
-        .dashboard-welcome-sub {
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-
-        .dashboard-user-avatar {
-            width: 45px;
-            height: 45px;
-            background: var(--gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--brown);
-            font-weight: bold;
-        }
+        .dashboard-welcome-title { font-size: 2.2rem; margin-bottom: 5px; }
+        .dashboard-current-date { color: var(--theme-muted); font-size: 0.9rem; font-weight: 600; }
 
         /* Grid Layout */
         .dashboard-layout-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 56px;
+            
         }
 
-        @media (max-width: 768px) {
-            .dashboard-layout-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Card Component */
-        .dashboard-card {
-            background: var(--white);
-            border-radius: var(--radius);
+        /* Generic Card Style */
+        .dashboard-content-card {
+            background: var(--theme-white);
+            border-radius: var(--theme-radius);
             padding: 25px;
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            transition: transform 0.2s ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--gold);
-        }
-
-        .dashboard-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Session Details */
-        .dashboard-session-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .dashboard-detail-item {
+            box-shadow: var(--theme-shadow);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            height: 100%;
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease, border-color 0.3s;
+        }
+        .dashboard-content-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--theme-gold);
         }
 
-        .dashboard-detail-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            margin-bottom: 5px;
-        }
-
-        .dashboard-detail-value {
-            font-weight: 700;
-            color: var(--brown);
-            font-size: 1.1rem;
-        }
-
-        .dashboard-status-badge {
-            background-color: var(--cream);
-            color: var(--gold-dark);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border: 1px solid var(--gold);
-        }
-
-        /* Recovery Widget */
-        .dashboard-score-wrapper {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        .dashboard-score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 8px solid var(--cream);
-            border-top: 8px solid var(--gold);
-            border-right: 8px solid var(--gold);
-            margin: 0 auto 15px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dashboard-score-text {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--brown);
+        .dashboard-card-header-title {
             font-family: 'Playfair Display', serif;
-        }
-
-        .dashboard-trend-box {
+            font-size: 1.2rem;
+            color: var(--theme-brown);
+            margin-bottom: 20px;
             display: flex;
-            justify-content: center;
-            gap: 5px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .dashboard-trend-up {
-            color: #2e7d32;
-        }
-
-        .dashboard-trend-down {
-            color: #c62828;
-        }
-
-        .dashboard-score-note {
-            font-size: 0.9rem;
-            color: var(--muted);
-            font-style: italic;
-        }
-
-        /* Precautions */
-        .dashboard-precaution-box {
-            background-color: var(--cream);
-            border-left: 4px solid var(--gold-dark);
-            padding: 15px;
-            border-radius: 0 var(--radius) var(--radius) 0;
-        }
-
-        .dashboard-precaution-tag {
-            display: inline-block;
-            background: var(--brown);
-            color: var(--gold);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .dashboard-list-ul {
-            list-style: none;
-        }
-
-        .dashboard-list-li {
-            margin-bottom: 8px;
-            display: flex;
+            align-items: center;
             gap: 10px;
+            border-bottom: 1px dashed rgba(120, 53, 15, 0.1);
+            padding-bottom: 10px;
         }
 
-        .dashboard-list-icon {
-            color: var(--gold-dark);
-            margin-top: 4px;
+        /* Specific Widget: Appointment */
+        .dashboard-appointment-widget {
+            background-color: var(--theme-bg-light);
+            border-left: 4px solid var(--theme-gold);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 15px;
         }
+        .dashboard-appointment-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .dashboard-appointment-label { color: var(--theme-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .dashboard-appointment-value { color: var(--theme-text-dark); font-weight: 700; }
 
-        /* Alerts */
-        .dashboard-alert-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            gap: 12px;
+        /* Specific Widget: Chart */
+        .dashboard-chart-wrapper { position: relative; height: 300px; width: 100%; overflow: hidden; }
+
+        /* Specific Widget: Notes */
+        .dashboard-note-item { display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .dashboard-note-item:last-child { border-bottom: none; }
+        
+        .dashboard-note-date-box {
+            background: var(--theme-brown); color: var(--theme-gold); padding: 5px 10px;
+            border-radius: 6px; text-align: center; min-width: 60px; height: fit-content;
         }
+        .dashboard-note-date-month { display: block; font-size: 0.7rem; opacity: 0.8; }
+        .dashboard-note-date-day { display: block; font-size: 1.1rem; line-height: 1; }
+        
+        .dashboard-note-content h5 { font-size: 1rem; margin-bottom: 4px; color: var(--theme-text-dark); font-weight: 700; }
+        .dashboard-note-content p { font-size: 0.85rem; color: var(--theme-muted); margin: 0; }
+        .dashboard-note-link { color: var(--theme-gold-dark); font-size: 0.8rem; text-decoration: none; font-weight: 700; }
 
-        .dashboard-alert-icon-box {
-            width: 30px;
-            height: 30px;
-            background: var(--cream);
-            color: var(--brown);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
+        /* Specific Widget: Quick Actions */
+        .dashboard-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; height: 100%; }
+        
+        .dashboard-action-button {
+            background: var(--theme-white); border: 1px solid var(--theme-brown); color: var(--theme-brown);
+            border-radius: 10px; padding: 15px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; transition: all 0.3s;
         }
+        .dashboard-action-button i { font-size: 1.5rem; color: var(--theme-gold-dark); }
+        .dashboard-action-button span { font-weight: 700; font-size: 0.9rem; }
+        
+        .dashboard-action-button:hover { background: var(--theme-brown); color: var(--theme-white); }
+        .dashboard-action-button:hover i { color: var(--theme-gold); }
 
-        .dashboard-alert-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
+        /* Column Spans */
+        .dashboard-col-span-4 { grid-column: span 4; }
+        .dashboard-col-span-6 { grid-column: span 6; }
+        .dashboard-col-span-8 { grid-column: span 8; }
+        .dashboard-col-span-12 { grid-column: span 12; }
 
-        .dashboard-alert-desc {
-            font-size: 0.8rem;
-            color: var(--muted);
-        }
-
-        /* Actions */
-        .dashboard-actions-bar {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .dashboard-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-family: 'Lato', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .dashboard-btn-primary {
-            background-color: var(--brown);
-            color: var(--white);
-        }
-
-        .dashboard-btn-primary:hover {
-            background-color: #5a270b;
-        }
-
-        .dashboard-btn-secondary {
-            background-color: var(--white);
-            border: 1px solid var(--brown);
-            color: var(--brown);
-        }
-
-        .dashboard-btn-secondary:hover {
-            background-color: var(--cream);
-        }
-
-        /* Utility for loading state */
-        .dashboard-skeleton {
-            color: transparent;
-            background-color: #eee;
-            border-radius: 4px;
+        @media (max-width: 1100px) {
+            .dashboard-nav-links-group { display: none; }
+            .dashboard-col-span-4, .dashboard-col-span-6, .dashboard-col-span-8 { grid-column: span 12; }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="dashboard-container">
-        <header class="dashboard-header">
-            <div>
-                <h1 class="dashboard-welcome-title" id="user-welcome">Loading...</h1>
-                <span class="dashboard-welcome-sub">Your healing journey continues today.</span>
+    <!-- TOP NAVBAR -->
+    <nav class="dashboard-navbar-container">
+        <!-- 1. Logo -->
+        <div class="dashboard-logo-wrapper">
+            <img src="/static/assets/panchkalpa-logo-trans.png" alt="Panchkalpa">
+        </div>
+
+        <!-- 2. Navigation Links -->
+        <div class="dashboard-nav-links-group">
+            <a href="dashboard.html" class="dashboard-nav-item-button active"><i class="fa-brands fa-dashcube"></i> Dashboard</a>
+            <a href="appointments.html" class="dashboard-nav-item-button"><i class="fa-solid fa-video"></i> Appointments</a>
+            <a href="progress.html" class="dashboard-nav-item-button"><i class="fa-regular fa-calendar-check"></i> Progress</a>
+            <a href="#" class="dashboard-nav-item-button"><i class="fa-solid fa-file-invoice"></i> Billing</a>
+        </div>
+
+        <!-- 3. Profile & Settings -->
+        <div class="dashboard-nav-profile-section">
+            
+            <!-- Notifications (Bell) Wrapper -->
+            <div class="notify-wrapper">
+                <button class="dashboard-nav-item-button" style="background:none; border:none; cursor:pointer; padding: 10px;" onclick="toggleNotifyPopup()">
+                    <i class="fa-solid fa-bell" style="font-size:1.2rem; color:var(--theme-gold);"></i>
+                    <!-- Unread Badge -->
+                    <span class="notify-badge-count" id="notify-badge" style="display:none;">0</span>
+                </button>
+
+                <!-- POPUP WINDOW -->
+                <div class="notify-popup-window" id="notifyPopup">
+                    <div class="notify-header-bar">
+                        <h3 class="notify-header-title">Notifications</h3>
+                        <button class="notify-action-link" onclick="markAllNotifyRead()">Mark all read</button>
+                    </div>
+                    <div class="notify-content-scroll-area" id="notify-content">
+                        <div style="padding:20px; text-align:center; color:#999;">Loading...</div>
+                    </div>
+                </div>
             </div>
-            <div class="dashboard-user-avatar" id="user-initials">--</div>
-        </header>
 
-        <div class="dashboard-layout-grid">
+            <!-- User Profile Pill -->
+            <div class="dashboard-profile-summary-pill" onclick="window.location.href='profile.html'">
+                <div class="dashboard-profile-icon-circle" id="header-initial">?</div>
+                <div class="dashboard-profile-name-text" id="header-name">Loading...</div>
+            </div>
 
-            <div class="dashboard-main-col">
+            <!-- Logout -->
+            <button class="dashboard-logout-action" title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </div>
+    </nav>
 
-                <section class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-card-title">
-                            <i class="fas fa-spa" style="color: var(--gold-dark);"></i>
-                            Upcoming Session
-                        </div>
-                        <span class="dashboard-status-badge" id="session-status">...</span>
+    <!-- DASHBOARD CONTENT -->
+    <div class="dashboard-main-container">
+        
+        <!-- Header -->
+        <div class="dashboard-page-header">
+            <div>
+                <h1 class="dashboard-welcome-title">Welcome, <span id="welcome-name">...</span> 👋</h1>
+                <div class="dashboard-current-date" id="current-date">Loading Date...</div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="dashboard-layout-grid" >
+
+            <!-- Upcoming Appointment -->
+            <div class="dashboard-content-card dashboard-col-span-4">
+                <div class="dashboard-card-header-title">
+                    <i class="far fa-calendar-check" style="color:var(--theme-gold-dark)"></i>
+                    Upcoming Appointment
+                </div>
+                <div class="dashboard-appointment-widget">
+                    <div class="dashboard-appointment-row">
+                        <span class="dashboard-appointment-label">Therapy</span>
+                        <span class="dashboard-appointment-value" id="appt-therapy">Loading...</span>
                     </div>
-
-                    <div class="dashboard-session-grid">
-                        <div class="dashboard-detail-item">
-                            <span class="dashboard-detail-label">Therapy Name</span>
-                            <span class="dashboard-detail-value" id="session-name">Loading...</span>
-                        </div>
-                        <div class="dashboard-detail-item">
-                            <span class="dashboard-detail-label">Date & Time</span>
-                            <span class="dashboard-detail-value" id="session-time">Loading...</span>
-                        </div>
-                        <div class="dashboard-detail-item">
-                            <span class="dashboard-detail-label">Duration</span>
-                            <span class="dashboard-detail-value" id="session-duration">...</span>
-                        </div>
-                        <div class="dashboard-detail-item">
-                            <span class="dashboard-detail-label">Assigned Practitioner</span>
-                            <span class="dashboard-detail-value" id="session-doctor">...</span>
-                        </div>
-                        <div class="dashboard-detail-item">
-                            <span class="dashboard-detail-label">Center / Room</span>
-                            <span class="dashboard-detail-value" id="session-room">...</span>
-                        </div>
+                    <div class="dashboard-appointment-row">
+                        <span class="dashboard-appointment-label">Therapist</span>
+                        <span class="dashboard-appointment-value" id="appt-therapist">Loading...</span>
                     </div>
-                </section>
-
-                <section class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-card-title">Guidelines</div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                    <div style="text-align:center;">
+                        <div style="font-size:1.5rem; font-weight:700; color:var(--theme-brown);" id="appt-date">--</div>
+                        <div style="font-size:0.8rem; color:var(--theme-muted); text-transform:uppercase;" id="appt-month">--</div>
                     </div>
-                    <div class="dashboard-precaution-box">
-                        <span class="dashboard-precaution-tag" id="precaution-type">...</span>
-                        <ul class="dashboard-list-ul" id="precaution-list">
-                            <li>Loading guidelines...</li>
-                        </ul>
+                    <div style="text-align:center;">
+                        <div style="font-size:1.5rem; font-weight:700; color:var(--theme-brown);" id="appt-time">--:--</div>
+                        <div style="font-size:0.8rem; color:var(--theme-muted); text-transform:uppercase;" id="appt-period">--</div>
                     </div>
-                </section>
-
-                <div class="dashboard-actions-bar">
-                    <button class="dashboard-btn dashboard-btn-primary">
-                        <i class="fas fa-calendar-alt"></i> View Schedule
-                    </button>
-                    <button class="dashboard-btn dashboard-btn-secondary">
-                        <i class="fas fa-book-open"></i> Read Guidelines
+                    <button style="background:var(--theme-brown); color:white; padding:8px 16px; border:none; border-radius:20px; cursor:pointer;">
+                        Details <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="dashboard-sidebar-col">
-
-                <section class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-card-title">Recovery Score</div>
-                    </div>
-                    <div class="dashboard-score-wrapper">
-                        <div class="dashboard-score-circle">
-                            <span class="dashboard-score-text" id="recovery-score">--</span>
-                        </div>
-                        <div class="dashboard-trend-box" id="recovery-trend">
-                        </div>
-                        <p class="dashboard-score-note" id="recovery-note">Loading analysis...</p>
-                    </div>
-                </section>
-
-                <section class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-card-title">Quick Alerts</div>
-                    </div>
-
-                    <div id="alerts-container">
-                    </div>
-
-                    <button class="dashboard-btn dashboard-btn-secondary" style="width: 100%; margin-top: 15px;">
-                        Start Feedback
-                    </button>
-                </section>
-
+            <!-- Progress Chart -->
+            <div class="dashboard-content-card dashboard-col-span-8">
+                <div class="dashboard-card-header-title">
+                    <i class="fas fa-chart-line" style="color:var(--theme-gold-dark)"></i>
+                    Recovery Overview
+                </div>
+                <div class="dashboard-chart-wrapper">
+                    <canvas id="progressChart"></canvas>
+                </div>
             </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-content-card dashboard-col-span-6">
+                <div class="dashboard-card-header-title">
+                    <i class="fas fa-bolt" style="color:var(--theme-gold-dark)"></i>
+                    Quick Actions
+                </div>
+                <div class="dashboard-action-grid">
+                    <a href="#" class="dashboard-action-button">
+                        <i class="far fa-calendar-plus"></i>
+                        <span>Book Appointment</span>
+                    </a>
+                    <a href="#" class="dashboard-action-button">
+                        <i class="fas fa-tasks"></i>
+                        <span>View Progress</span>
+                    </a>
+                    <a href="#" class="dashboard-action-button">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Pay Bills</span>
+                    </a>
+                    <a href="#" class="dashboard-action-button">
+                        <i class="fas fa-video"></i>
+                        <span>Online Consultation</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Notes -->
+            <div class="dashboard-content-card dashboard-col-span-6">
+                <div class="dashboard-card-header-title">
+                    <i class="fas fa-notes-medical" style="color:var(--theme-gold-dark)"></i>
+                    Recent Session Notes
+                </div>
+                
+                <div id="recent-notes-container">
+                    <!-- Content injected via JS -->
+                    <p class="muted" style="text-align:center;">Loading notes...</p>
+                </div>
+
+                <div style="margin-top:auto; text-align:right; padding-top:10px;">
+                    <a href="#" style="color:var(--theme-brown); font-weight:700; font-size:0.9rem; text-decoration:none;">View All History →</a>
+                </div>
+            </div>
+
         </div>
     </div>
 
+    <!-- SCRIPT -->
     <script>
-        // 1. Mock Database Response (This mimics what your Django/Node backend would send)
-       const mockApiResponse = {
-    user: {
-        name: "Demo Rahul",
-        initials: "RB"
-    },
-    nextSession: {
-        therapyName: "Shirodhara",
-        dateTime: "Nov 20, 2:00 PM",
-        duration: "45 Minutes",
-        doctor: "Dr. Ananya Vaidya",
-        room: "Room 104 (Lotus Wing)",
-        status: "Scheduled Today"
-    },
-    precautions: {
-        type: "Pre-Procedure",
-        list: [
-            "Ensure you have not eaten solid food for 2 hours prior.",
-            "Wear loose cotton clothing.",
-            "Avoid screen time 30 mins before arrival."
-        ]
-    },
-    recovery: {
-        score: 82,
-        trend: "up", 
-        note: "“Your consistency improved this week. Pitta levels are balancing.”"
-    },
-    alerts: [
-        { icon: "fa-exclamation", title: "Missed Precaution", desc: "Yesterday's warm water intake low." },
-        { icon: "fa-comment-dots", title: "Pending Feedback", desc: "How was your Nasya session?" },
-        { icon: "fa-glass-water", title: "Hydration", desc: "Drink 2 glasses of warm water now." }
-    ]
-};
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            /* =========================================
+               1. DASHBOARD CONTENT LOGIC
+               ========================================= */
+            
+            const MOCK_DATA = {
+                user: { firstName: "Aniket", lastName: "Sharma", role: "Patient" },
+                appointment: { therapy: "Shirodhara", therapist: "Dr. Ananya Vaidya", date: "22", month: "Nov", time: "10:00", period: "AM" },
+                progress: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'], data: [45, 50, 62, 68, 75, 82] },
+                notes: [
+                    { day: "18", month: "NOV", title: "Abhyanga Session", preview: "Patient responded well to oil application. Stiffness in lower back reduced..." },
+                    { day: "12", month: "NOV", title: "Nasya Karma", preview: "Sinus congestion cleared significantly. Advised light diet for dinner." }
+                ]
+            };
 
-// 1. Function to Render Data
-function renderDashboard(data) {
-    // --- User Info ---
-    // Added check to ensure element exists to prevent errors if HTML is missing
-    if(document.getElementById('user-welcome')) document.getElementById('user-welcome').textContent = `Namaste, ${data.user.name}`;
-    if(document.getElementById('user-initials')) document.getElementById('user-initials').textContent = data.user.initials;
-
-    // --- Session Info ---
-    document.getElementById('session-name').textContent = data.nextSession.therapyName;
-    document.getElementById('session-time').textContent = data.nextSession.dateTime;
-    document.getElementById('session-duration').textContent = data.nextSession.duration;
-    document.getElementById('session-doctor').textContent = data.nextSession.doctor;
-    document.getElementById('session-room').textContent = data.nextSession.room;
-    document.getElementById('session-status').textContent = data.nextSession.status;
-
-    // --- Precautions List ---
-    const precautionListEl = document.getElementById('precaution-list');
-    document.getElementById('precaution-type').textContent = data.precautions.type;
-
-    precautionListEl.innerHTML = ''; // Clear loading text
-
-    data.precautions.list.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'dashboard-list-li';
-        li.innerHTML = `<i class="fas fa-check dashboard-list-icon"></i> ${item}`;
-        precautionListEl.appendChild(li);
-    });
-
-    // --- Recovery Score ---
-    document.getElementById('recovery-score').textContent = data.recovery.score;
-    document.getElementById('recovery-note').textContent = data.recovery.note;
-
-    const trendEl = document.getElementById('recovery-trend');
-    if (data.recovery.trend === 'up') {
-        trendEl.innerHTML = `<i class="fas fa-arrow-up"></i> Improving`;
-        trendEl.classList.add('dashboard-trend-up');
-    } else {
-        trendEl.innerHTML = `<i class="fas fa-arrow-down"></i> Declining`;
-        trendEl.classList.add('dashboard-trend-down');
-    }
-
-    // --- Alerts ---
-    const alertsContainer = document.getElementById('alerts-container');
-    alertsContainer.innerHTML = ''; // Clear loading
-
-    data.alerts.forEach(alert => {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'dashboard-alert-item';
-        alertDiv.innerHTML = `
-        <div class="dashboard-alert-icon-box"><i class="fas ${alert.icon}"></i></div>
-        <div>
-            <div class="dashboard-alert-title">${alert.title}</div>
-            <div class="dashboard-alert-desc">${alert.desc}</div>
-        </div>
-    `;
-        alertsContainer.appendChild(alertDiv);
-    });
-}
-
-// 2. Main Execution Logic (Fetch with Fallback)
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("Initializing Dashboard...");
-
-    fetch('/api/get-dashboard-data')
-        .then(response => {
-            // Check if the API actually responded with success (200-299)
-            // fetch() usually doesn't throw errors on 404s, so we check manually
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
+            async function initDashboard() {
+                let data = MOCK_DATA;
+                try {
+                    const response = await fetch('/api/dashboard-data/');
+                    if (response.ok) {
+                        const jsonData = await response.json();
+                        if(jsonData.user) data = jsonData; 
+                    }
+                } catch (error) { console.error("Network error. Using mock data."); }
+                renderDashboard(data);
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Success: Loaded data from Live API");
-            renderDashboard(data);
-        })
-        .catch(error => {
-            // This block runs if:
-            // 1. Network fails
-            // 2. API returns 404/500 (because we threw Error above)
-            // 3. JSON parsing fails
-            console.warn("API unavailable or failed. Switching to Mock Data.", error);
-            renderDashboard(mockApiResponse);
+
+            function renderDashboard(data) {
+                document.getElementById('welcome-name').textContent = data.user.firstName;
+                document.getElementById('header-name').textContent = data.user.firstName;
+                document.getElementById('header-initial').textContent = data.user.firstName.charAt(0);
+                
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+                document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+
+                if (data.appointment) {
+                    document.getElementById('appt-therapy').textContent = data.appointment.therapy;
+                    document.getElementById('appt-therapist').textContent = data.appointment.therapist;
+                    document.getElementById('appt-date').textContent = data.appointment.date;
+                    document.getElementById('appt-month').textContent = data.appointment.month;
+                    document.getElementById('appt-time').textContent = data.appointment.time;
+                    document.getElementById('appt-period').textContent = data.appointment.period;
+                }
+
+                const notesContainer = document.getElementById('recent-notes-container');
+                notesContainer.innerHTML = '';
+                if (data.notes && data.notes.length > 0) {
+                    data.notes.forEach(note => {
+                        const html = `
+                        <div class="dashboard-note-item">
+                            <div class="dashboard-note-date-box">
+                                <span class="dashboard-note-date-month">${note.month}</span>
+                                <strong class="dashboard-note-date-day">${note.day}</strong>
+                            </div>
+                            <div class="dashboard-note-content">
+                                <h5>${note.title}</h5>
+                                <p>${note.preview}</p>
+                                <a href="#" class="dashboard-note-link">Read full note</a>
+                            </div>
+                        </div>`;
+                        notesContainer.innerHTML += html;
+                    });
+                } else {
+                    notesContainer.innerHTML = '<p class="muted" style="text-align:center; padding:10px;">No recent notes found.</p>';
+                }
+                initChart(data.progress);
+            }
+
+            function initChart(progressData) {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.5)'); 
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: progressData.labels,
+                        datasets: [{
+                            label: 'Vitality Score',
+                            data: progressData.data,
+                            borderColor: '#78350f',
+                            backgroundColor: gradient,
+                            borderWidth: 2,
+                            pointBackgroundColor: '#FFD700',
+                            pointBorderColor: '#78350f',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100, grid: { borderDash: [5, 5], color: '#e0e0e0' } }, x: { grid: { display: false } } }
+                    }
+                });
+            }
+
+            initDashboard();
         });
-});
+
+        /* =========================================
+           2. NOTIFICATION POPUP LOGIC (Global)
+           ========================================= */
+        let isNotifyOpen = false;
+
+        function toggleNotifyPopup() {
+            const popup = document.getElementById('notifyPopup');
+            isNotifyOpen = !isNotifyOpen;
+            if (isNotifyOpen) {
+                popup.classList.add('notify-is-visible');
+                fetchNotifyData();
+            } else {
+                popup.classList.remove('notify-is-visible');
+            }
+        }
+
+        // Close on click outside
+        document.addEventListener('click', function(event) {
+            const wrapper = document.querySelector('.notify-wrapper');
+            if (wrapper && !wrapper.contains(event.target)) {
+                document.getElementById('notifyPopup').classList.remove('notify-is-visible');
+                isNotifyOpen = false;
+            }
+        });
+
+        function fetchNotifyData() {
+            // Mock Notification Data
+            const mockNotifs = [
+                { id: 1, type: 'session', title: "Upcoming Session", message: "Shirodhara starts in 2 hours.", time: "10 mins ago", isRead: false, link: "#" },
+                { id: 2, type: 'alert', title: "Symptom Alert", message: "Please check post-care instructions.", time: "1 hour ago", isRead: false, link: "#" },
+                { id: 3, type: 'precaution', title: "Hydration", message: "Drink warm water before your session.", time: "2 hours ago", isRead: true, link: "#" }
+            ];
+
+            // Simulate fetch
+            // In real app: fetch('/api/notifications/').then(res => res.json())...
+            renderNotifyPopup(mockNotifs);
+        }
+
+        function renderNotifyPopup(data) {
+            const container = document.getElementById('notify-content');
+            const badge = document.getElementById('notify-badge');
+            container.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div style="padding:30px; text-align:center; color:#ccc; font-style:italic;">No notifications</div>';
+                badge.style.display = 'none';
+                return;
+            }
+
+            const unreadCount = data.filter(n => !n.isRead).length;
+            if(unreadCount > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            } else {
+                badge.style.display = 'none';
+            }
+
+            data.forEach(item => {
+                let iconClass = 'fa-bell';
+                let typeClass = 'notify-color-msg';
+                
+                if(item.type === 'session') { iconClass = 'fa-calendar-check'; typeClass = 'notify-color-session'; }
+                else if(item.type === 'alert') { iconClass = 'fa-exclamation-triangle'; typeClass = 'notify-color-alert'; }
+                else if(item.type === 'precaution') { iconClass = 'fa-glass-water'; typeClass = 'notify-color-precaution'; }
+
+                const html = `
+                <div class="notify-list-item ${item.isRead ? '' : 'notify-state-unread'}">
+                    <div class="notify-type-icon ${typeClass}">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <div class="notify-item-text">
+                        <h4>${item.title}</h4>
+                        <p>${item.message}</p>
+                        <span class="notify-timestamp">${item.time}</span>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function markAllNotifyRead() {
+            alert("All marked as read (Mock Action)");
+            document.getElementById('notify-badge').style.display = 'none';
+            const items = document.querySelectorAll('.notify-list-item');
+            items.forEach(i => i.classList.remove('notify-state-unread'));
+        }
     </script>
 
 </body>
-
 </html>

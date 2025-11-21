@@ -8,158 +8,7 @@
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title> {% block title %}{% endblock title %} | Panchkalpa </title>
-
-    <style>
-        :root {
-            --gold: #FFD700;
-            --gold-dark: #C8A300;
-            --cream: #FFF8E6;
-            --brown: #78350f;
-            --bg-light: #fff7e5;
-            --text-dark: #2A241F;
-            --muted: #6b5f5a;
-        }
-
-        body {
-            margin: 0;
-            font-family: "Inter", sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            background: #FAF7EC;
-        }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 20vw;
-            background: var(--brown);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            color: white;
-            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-        }
-
-        /* LOGO */
-        .logo {
-            height: 76px;
-            /* visible logo height */
-            overflow: hidden;
-            /* hides the extra transparent space */
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 150px;
-            /* bigger than container to cut off the empty space */
-            width: auto;
-            object-fit: contain;
-            margin-left: 25px;
-            margin-top: -5px;
-            /* adjusts vertical centering */
-        }
-
-        .logo .title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-top: 8px;
-        }
-
-        .logo .subtitle {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        /* NAV BUTTONS */
-        .nav-section {
-            padding: 0 16px;
-        }
-
-        .nav-btn {
-            width: 100%;
-            padding: 14px;
-            margin: 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            color: white;
-            opacity: 0.9;
-            transition: 0.25s ease-in-out;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 215, 0, 0.18);
-            opacity: 1;
-        }
-
-        .nav-btn.active {
-            background: rgba(255, 215, 0, 0.35);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-        }
-
-        /* ICON placeholders */
-        .nav-btn {
-            width: 15vw;
-            height: 20px;
-            color: var(--gold);
-        }
-
-        /* PROFILE BOTTOM */
-        .profile-box {
-            padding: 15px 20px;
-            background: rgba(255, 215, 0, 0.18);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .profile-icon {
-            width: 42px;
-            height: 42px;
-            background: white;
-            color: black;
-            font-weight: 700;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            font-size: 14px;
-        }
-
-        .profile-info .name {
-            font-weight: 600;
-        }
-
-        .profile-info .role {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        /* MAIN PAGE */
-        .main-content {
-            margin-left: 20vw;
-            padding: 40px;
-            width: calc(100% - 260px);
-        }
-    </style>
-
+    <link rel="stylesheet" href="/static/css/base.css">
 </head>
 
 <body>
@@ -214,7 +63,9 @@
     <div class="main-content">
         {% block body %}{% endblock body %}
     </div>
-
+<script>
+    {% block script %}{% endblock script %}
+</script>
 </body>
 
 </html>
