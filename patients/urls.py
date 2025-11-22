@@ -1,6 +1,9 @@
 from django.urls import path
-from django.shortcuts import render
+from . import views
 
 urlpatterns = [
-    path('patient-dashboard/', lambda request: render(request, 'patient_portal/patient-dashboard.html')),
+    path('appointments/', views.appointments, name='appointments'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('billing/', views.billing, name='billing'),
+    path('profile/', views.profile, name='profile'),
 ]

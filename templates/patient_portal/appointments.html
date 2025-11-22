@@ -2,70 +2,46 @@
 <html lang="en">
 
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointments | Panchkalpa</title>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/appointments.css">
-
-
+    <link rel="stylesheet" href="{% static 'css/appointments.css' %}">
 </head>
 
 <body>
 
     <!-- NAVBAR -->
     <nav class="dashboard-navbar-container">
-        <!-- 1. Logo -->
+
         <div class="dashboard-logo-wrapper">
-            <img src="/static/assets/panchkalpa-logo-trans.png" alt="Panchkalpa">
+            <img src="{% static 'assets/panchkalpa-logo-trans.png' %}" alt="Panchkalpa">
         </div>
 
-        <!-- 2. Navigation Links -->
         <div class="dashboard-nav-links-group">
-            <a href="dashboard.html" class="dashboard-nav-item-button"><i class="fa-brands fa-dashcube"></i> Dashboard</a>
-            <a href="appointments.html" class="dashboard-nav-item-button active"><i class="fa-solid fa-video"></i> Appointments</a>
-            <a href="progress.html" class="dashboard-nav-item-button"><i class="fa-regular fa-calendar-check"></i> Progress</a>
-            <a href="billing.html" class="dashboard-nav-item-button"><i class="fa-solid fa-file-invoice"></i> Billing</a>
-            <a href="teleconsult.html" class="dashboard-nav-item-button"><i class="fa-solid fa-headset"></i> Tele-Consult</a>
+            <a href="{% url 'dashboard' %}" class="dashboard-nav-item-button"><i class="fa-brands fa-dashcube"></i> Dashboard</a>
+            <a href="{% url 'appointments' %}" class="dashboard-nav-item-button active"><i class="fa-solid fa-video"></i> Appointments</a>
+            <a href="#" class="dashboard-nav-item-button"><i class="fa-regular fa-calendar-check"></i> Progress</a>
+            <a href="#" class="dashboard-nav-item-button"><i class="fa-solid fa-file-invoice"></i> Billing</a>
+            <a href="#" class="dashboard-nav-item-button"><i class="fa-solid fa-headset"></i> Tele-Consult</a>
         </div>
 
-        <!-- 3. Profile & Settings -->
         <div class="dashboard-nav-profile-section">
-
-            <!-- Notifications (Bell) Wrapper -->
-            <div class="notify-wrapper">
-                <button class="dashboard-nav-item-button" style="background:none; border:none; cursor:pointer; padding: 10px;" onclick="toggleNotifyPopup()">
-                    <i class="fa-solid fa-bell" style="font-size:1.2rem; color:var(--theme-gold);"></i>
-                    <span class="notify-badge-count" id="notify-badge" style="display:none;">0</span>
-                </button>
-
-                <!-- POPUP WINDOW -->
-                <div class="notify-popup-window" id="notifyPopup">
-                    <div class="notify-header-bar">
-                        <h3 class="notify-header-title">Notifications</h3>
-                        <button class="notify-action-link" onclick="markAllNotifyRead()">Mark all read</button>
-                    </div>
-                    <div class="notify-content-scroll-area" id="notify-content">
-                        <div style="padding:20px; text-align:center; color:#999;">Loading...</div>
-                    </div>
-                </div>
+            <div class="dashboard-profile-summary-pill">
+                <div class="dashboard-profile-icon-circle">{{ request.user.first_name|default:"A" }}</div>
+                <div class="dashboard-profile-name-text">{{ request.user.first_name|default:"User" }}</div>
             </div>
 
-            <!-- User Profile Pill -->
-            <div class="dashboard-profile-summary-pill" onclick="window.location.href='/templates/patient_portal/profile.html'">
-                <div class="dashboard-profile-icon-circle" id="header-initial">?</div>
-                <div class="dashboard-profile-name-text" id="header-name">Loading...</div>
-            </div>
-
-            <!-- Logout -->
             <button class="dashboard-logout-action" title="Logout">
                 <i class="fa-solid fa-right-from-bracket"></i>
             </button>
         </div>
+
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -82,28 +58,33 @@
                 <div class="appointments-card-header">
                     <i class="far fa-calendar-plus" style="color:var(--theme-gold-dark)"></i> Book New Session
                 </div>
-                
-                <form id="bookingForm" onsubmit="handleBooking(event)">
-                    
+
+                <form method="post" action="{% url 'appointments' %}">
+                    {% csrf_token %}
+
                     <div class="booking-form-group">
                         <label class="booking-label">Select Therapy</label>
-                        <select class="booking-input-select" id="input-therapy" required>
-                            <option value="">Loading therapies...</option>
-                            <!-- Options populated via JS -->
+                        <select class="booking-input-select" name="therapy" required>
+                            <option value="">-- Choose Therapy --</option>
+                            {% for t in therapies %}
+                            <option value="{{ t.id }}">{{ t.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="booking-form-group">
                         <label class="booking-label">Select Therapist</label>
-                        <select class="booking-input-select" id="input-therapist" required>
-                            <option value="">Loading therapists...</option>
-                            <!-- Options populated via JS -->
+                        <select class="booking-input-select" name="therapist" required>
+                            <option value="">-- Choose Therapist --</option>
+                            {% for th in therapists %}
+                            <option value="{{ th.id }}">{{ th.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="booking-form-group">
                         <label class="booking-label">Date</label>
-                        <input type="date" class="booking-input-date" id="input-date" required onchange="fetchSlots()">
+                        <input type="date" class="booking-input-date" name="date" id="input-date" required onchange="fetchSlots()">
                     </div>
 
                     <div class="booking-form-group">
@@ -111,33 +92,48 @@
                         <div class="booking-slots-grid" id="slots-container">
                             <div style="color:#aaa; font-size:0.9rem;">Select a date first</div>
                         </div>
-                        <input type="hidden" id="input-time" required>
+
+                        <input type="hidden" name="time" id="input-time" required>
                     </div>
 
                     <button type="submit" class="booking-submit-btn">Confirm Booking</button>
                 </form>
             </div>
 
-            <!-- 2. UPCOMING APPOINTMENTS -->
+            <!-- 2. UPCOMING -->
             <div class="appointments-content-card">
                 <div class="appointments-card-header">
                     <i class="fas fa-hourglass-half" style="color:var(--theme-gold-dark)"></i> Upcoming Sessions
                 </div>
-                
+
                 <div id="upcoming-list">
-                    <!-- JS Injected -->
-                    <p style="color:#999; text-align:center;">Loading...</p>
+                    {% if upcoming %}
+                        {% for appt in upcoming %}
+                        <div class="appointment-list-item">
+                            <div class="appointment-info">
+                                <h4>{{ appt.therapy.name }}</h4>
+                                <div class="appointment-meta">
+                                    <span><i class="far fa-calendar"></i> {{ appt.date }}</span>
+                                    <span><i class="far fa-clock"></i> {{ appt.time }}</span>
+                                </div>
+                                <div style="font-size:0.8rem; color:var(--theme-muted);">{{ appt.therapist.name }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align:center; color:#999;">No upcoming appointments.</p>
+                    {% endif %}
                 </div>
             </div>
 
         </div>
 
-        <!-- 3. HISTORY -->
+        <!-- HISTORY (Optional) -->
         <div class="appointments-content-card">
             <div class="appointments-card-header">
                 <i class="fas fa-history" style="color:var(--theme-gold-dark)"></i> Past Appointment History
             </div>
-            
+
             <div class="history-table-wrapper">
                 <table class="history-table">
                     <thead>
@@ -149,7 +145,7 @@
                         </tr>
                     </thead>
                     <tbody id="history-list">
-                        <!-- JS Injected -->
+                        <tr><td colspan="4" style="text-align:center; color:#aaa;">No records available</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -157,321 +153,33 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- SLOT GENERATOR -->
     <script>
-        // --- 1. INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchAppointments();
-            fetchBookingOptions(); // Fetch Therapists & Therapies
-            
-            // Mock User Data for Header (Since we're not on Dashboard page)
-            const user = { name: "Aniket" };
-            document.getElementById('header-name').textContent = user.name;
-            document.getElementById('header-initial').textContent = user.name.charAt(0);
-        });
-
-        // --- 2. FETCH DROPDOWN DATA (Therapies & Therapists) ---
-        async function fetchBookingOptions() {
-            try {
-                // In production: const res = await fetch('/api/booking-options/');
-                // const data = await res.json();
-
-                // MOCK DATA (Fallback)
-                const data = {
-                    therapies: [
-                        "Vamana (Therapeutic Emesis)",
-                        "Virechana (Purgation)",
-                        "Basti (Medicated Enema)",
-                        "Nasya (Nasal Administration)",
-                        "Raktamokshana (Blood Letting)",
-                        "Shirodhara (Mind Relaxation)",
-                        "Abhyanga (Full Body Massage)"
-                    ],
-                    therapists: [
-                        "Dr. Ananya Vaidya",
-                        "Dr. Rahul Sharma",
-                        "Dr. Priya Singh",
-                        "Dr. Vikram Oberoi",
-                        "Dr. Somanth Iyer"
-                    ]
-                };
-
-                populateSelect('input-therapy', data.therapies, "-- Choose Therapy --");
-                populateSelect('input-therapist', data.therapists, "-- Choose Therapist --");
-
-            } catch (error) {
-                console.error("Error loading options:", error);
-            }
-        }
-
-        function populateSelect(elementId, items, defaultText) {
-            const select = document.getElementById(elementId);
-            select.innerHTML = `<option value="">${defaultText}</option>`;
-            
-            items.forEach(item => {
-                const option = document.createElement('option');
-                // If item is "Vamana (Therapeutic Emesis)", value becomes "Vamana"
-                option.value = item.split(" (")[0]; 
-                option.textContent = item;
-                select.appendChild(option);
-            });
-        }
-
-        // --- 3. FETCH APPOINTMENTS (GET) ---
-        async function fetchAppointments() {
-            try {
-                // Real Backend: const res = await fetch('/api/appointments/');
-                // const data = await res.json();
-                
-                // MOCK DATA FALLBACK
-                const data = {
-                    upcoming: [
-                        { id: 101, therapy: "Shirodhara", date: "Nov 25, 2025", time: "10:00 AM", doctor: "Dr. Ananya Vaidya" },
-                        { id: 102, therapy: "Abhyanga", date: "Nov 28, 2025", time: "02:00 PM", doctor: "Dr. Rahul Sharma" }
-                    ],
-                    history: [
-                        { therapy: "Nasya Karma", date: "Oct 15, 2025", doctor: "Dr. Priya Singh", status: "Completed" },
-                        { therapy: "Consultation", date: "Sep 10, 2025", doctor: "Dr. Ananya Vaidya", status: "Cancelled" }
-                    ]
-                };
-
-                renderUpcoming(data.upcoming);
-                renderHistory(data.history);
-
-            } catch (error) {
-                console.error("Error loading data:", error);
-            }
-        }
-
-        // --- 4. RENDER FUNCTIONS ---
-        function renderUpcoming(appointments) {
-            const container = document.getElementById('upcoming-list');
-            container.innerHTML = '';
-
-            if(appointments.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#999;">No upcoming appointments.</p>';
-                return;
-            }
-
-            appointments.forEach(appt => {
-                const html = `
-                <div class="appointment-list-item" id="appt-${appt.id}">
-                    <div class="appointment-info">
-                        <h4>${appt.therapy}</h4>
-                        <div class="appointment-meta">
-                            <span><i class="far fa-calendar"></i> ${appt.date}</span>
-                            <span><i class="far fa-clock"></i> ${appt.time}</span>
-                        </div>
-                        <div style="font-size:0.8rem; color:var(--theme-muted); margin-top:4px;">${appt.doctor}</div>
-                    </div>
-                    <button class="appointment-cancel-btn" onclick="cancelAppointment(${appt.id})">Cancel</button>
-                </div>`;
-                container.innerHTML += html;
-            });
-        }
-
-        function renderHistory(history) {
-            const container = document.getElementById('history-list');
-            container.innerHTML = '';
-
-            history.forEach(item => {
-                const statusClass = item.status === 'Completed' ? 'status-completed' : 'status-cancelled';
-                const html = `
-                <tr>
-                    <td>${item.therapy}</td>
-                    <td>${item.date}</td>
-                    <td>${item.doctor}</td>
-                    <td><span class="history-status-badge ${statusClass}">${item.status}</span></td>
-                </tr>`;
-                container.innerHTML += html;
-            });
-        }
-
-        // --- 5. SLOT GENERATOR (Logic) ---
         function fetchSlots() {
             const date = document.getElementById('input-date').value;
             const container = document.getElementById('slots-container');
-            
+
             if (!date) return;
 
-            // Mock Slot Generation
-            container.innerHTML = '';
+            container.innerHTML = "";
             const mockTimes = ["09:00 AM", "10:30 AM", "01:00 PM", "03:30 PM", "05:00 PM"];
-            
+
             mockTimes.forEach(time => {
                 const div = document.createElement('div');
                 div.className = 'booking-time-slot';
                 div.textContent = time;
-                div.onclick = () => selectSlot(div, time);
+
+                div.onclick = () => {
+                    document.querySelectorAll('.booking-time-slot').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                    document.getElementById('input-time').value = time;
+                };
+
                 container.appendChild(div);
             });
-        }
-
-        function selectSlot(element, time) {
-            // Visual Selection
-            document.querySelectorAll('.booking-time-slot').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            // Set hidden input
-            document.getElementById('input-time').value = time;
-        }
-
-        // --- 6. ACTIONS (POST/DELETE) ---
-        async function handleBooking(e) {
-            e.preventDefault();
-            const btn = document.querySelector('.booking-submit-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "Processing...";
-
-            const payload = {
-                therapy: document.getElementById('input-therapy').value,
-                therapist: document.getElementById('input-therapist').value,
-                date: document.getElementById('input-date').value,
-                time: document.getElementById('input-time').value
-            };
-
-            if(!payload.time) {
-                alert("Please select a time slot.");
-                btn.innerText = originalText;
-                return;
-            }
-
-            try {
-                // API Call would go here: fetch('/api/book/', { method: 'POST', body: ... })
-                await new Promise(r => setTimeout(r, 1000)); // Simulating network
-                
-                alert("Appointment Booked Successfully!");
-                // Add to list manually for demo (or re-fetch)
-                const newAppt = {
-                    id: Date.now(),
-                    therapy: payload.therapy,
-                    date: new Date(payload.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}),
-                    time: payload.time,
-                    doctor: payload.therapist
-                };
-                
-                // Simple UI update
-                const container = document.getElementById('upcoming-list');
-                const html = `
-                <div class="appointment-list-item" id="appt-${newAppt.id}">
-                    <div class="appointment-info">
-                        <h4>${newAppt.therapy}</h4>
-                        <div class="appointment-meta">
-                            <span><i class="far fa-calendar"></i> ${newAppt.date}</span>
-                            <span><i class="far fa-clock"></i> ${newAppt.time}</span>
-                        </div>
-                        <div style="font-size:0.8rem; color:var(--theme-muted); margin-top:4px;">${newAppt.doctor}</div>
-                    </div>
-                    <button class="appointment-cancel-btn" onclick="cancelAppointment(${newAppt.id})">Cancel</button>
-                </div>`;
-                container.innerHTML = html + container.innerHTML;
-
-            } catch (err) {
-                console.error(err);
-            } finally {
-                btn.innerText = originalText;
-            }
-        }
-
-        async function cancelAppointment(id) {
-            if(!confirm("Are you sure you want to cancel this session?")) return;
-
-            try {
-                // API Call: fetch(`/api/appointments/${id}/cancel/`, { method: 'POST' })
-                const item = document.getElementById(`appt-${id}`);
-                if(item) {
-                    item.style.opacity = '0.5';
-                    setTimeout(() => {
-                        item.remove();
-                        const container = document.getElementById('upcoming-list');
-                        if(container.children.length === 0) {
-                            container.innerHTML = '<p style="text-align:center; color:#999;">No upcoming appointments.</p>';
-                        }
-                    }, 500);
-                }
-            } catch (err) {
-                alert("Failed to cancel.");
-            }
-        }
-
-        /* =========================================
-           7. NOTIFICATION POPUP LOGIC (Matches Dashboard)
-           ========================================= */
-        let isNotifyOpen = false;
-
-        function toggleNotifyPopup() {
-            const popup = document.getElementById('notifyPopup');
-            isNotifyOpen = !isNotifyOpen;
-            if (isNotifyOpen) {
-                popup.classList.add('notify-is-visible');
-                fetchNotifyData();
-            } else {
-                popup.classList.remove('notify-is-visible');
-            }
-        }
-
-        document.addEventListener('click', function(event) {
-            const wrapper = document.querySelector('.notify-wrapper');
-            if (wrapper && !wrapper.contains(event.target)) {
-                document.getElementById('notifyPopup').classList.remove('notify-is-visible');
-                isNotifyOpen = false;
-            }
-        });
-
-        function fetchNotifyData() {
-            const mockNotifs = [
-                { id: 1, type: 'session', title: "Upcoming Session", message: "Shirodhara starts in 2 hours.", time: "10 mins ago", isRead: false, link: "#" },
-                { id: 2, type: 'alert', title: "Symptom Alert", message: "Please check post-care instructions.", time: "1 hour ago", isRead: false, link: "#" }
-            ];
-            renderNotifyPopup(mockNotifs);
-        }
-
-        function renderNotifyPopup(data) {
-            const container = document.getElementById('notify-content');
-            const badge = document.getElementById('notify-badge');
-            container.innerHTML = '';
-
-            if (!data || data.length === 0) {
-                container.innerHTML = '<div style="padding:30px; text-align:center; color:#ccc; font-style:italic;">No notifications</div>';
-                badge.style.display = 'none';
-                return;
-            }
-
-            const unreadCount = data.filter(n => !n.isRead).length;
-            if(unreadCount > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-            } else {
-                badge.style.display = 'none';
-            }
-
-            data.forEach(item => {
-                let iconClass = 'fa-bell';
-                let typeClass = 'notify-color-msg';
-                if(item.type === 'session') { iconClass = 'fa-calendar-check'; typeClass = 'notify-color-session'; }
-                else if(item.type === 'alert') { iconClass = 'fa-exclamation-triangle'; typeClass = 'notify-color-alert'; }
-
-                const html = `
-                <div class="notify-list-item ${item.isRead ? '' : 'notify-state-unread'}">
-                    <div class="notify-type-icon ${typeClass}">
-                        <i class="fas ${iconClass}"></i>
-                    </div>
-                    <div class="notify-item-text">
-                        <h4>${item.title}</h4>
-                        <p>${item.message}</p>
-                        <span class="notify-timestamp">${item.time}</span>
-                    </div>
-                </div>`;
-                container.innerHTML += html;
-            });
-        }
-
-        function markAllNotifyRead() {
-            alert("All marked as read (Mock Action)");
-            document.getElementById('notify-badge').style.display = 'none';
-            const items = document.querySelectorAll('.notify-list-item');
-            items.forEach(i => i.classList.remove('notify-state-unread'));
         }
     </script>
 
 </body>
+
 </html>
