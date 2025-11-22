@@ -60,10 +60,19 @@
             </div>
 
             <!-- User Profile Pill -->
-            <div class="dashboard-profile-summary-pill" onclick="window.location.href='profile.html'">
-                <div class="dashboard-profile-icon-circle" id="header-initial">?</div>
-                <div class="dashboard-profile-name-text" id="header-name">Loading...</div>
-            </div>
+            <<div class="dashboard-profile-summary-pill" onclick="window.location.href='{% url 'profile' %}'">
+
+    <!-- Initial -->
+    <div class="dashboard-profile-icon-circle">
+        {{ request.user.first_name|default:"A"|slice:":1" }}
+    </div>
+
+    <!-- Name -->
+    <div class="dashboard-profile-name-text">
+        {{ request.user.first_name|default:"Aniket" }}
+    </div>
+</div>
+
 
             <!-- Logout -->
             <button class="dashboard-logout-action" title="Logout">
@@ -78,7 +87,7 @@
         <!-- Header -->
         <div class="dashboard-page-header">
             <div>
-                <h1 class="dashboard-welcome-title">Welcome, <span id="welcome-name">...</span> 👋</h1>
+                <h1 class="dashboard-welcome-title">Welcome, {{ request.user.first_name|default:"Aniket" }} 👋</h1>
                 <div class="dashboard-current-date" id="current-date">Loading Date...</div>
             </div>
         </div>
@@ -195,193 +204,29 @@
     <!-- SCRIPT -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            
-            /* =========================================
-               1. DASHBOARD CONTENT LOGIC
-               ========================================= */
-            
-            const MOCK_DATA = {
-                user: { firstName: "Aniket", lastName: "Sharma", role: "Patient" },
-                appointment: { therapy: "Shirodhara", therapist: "Dr. Ananya Vaidya", date: "22", month: "Nov", time: "10:00", period: "AM" },
-                progress: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'], data: [45, 50, 62, 68, 75, 82] },
-                notes: [
-                    { day: "18", month: "NOV", title: "Abhyanga Session", preview: "Patient responded well to oil application. Stiffness in lower back reduced..." },
-                    { day: "12", month: "NOV", title: "Nasya Karma", preview: "Sinus congestion cleared significantly. Advised light diet for dinner." }
-                ]
-            };
+    const ctx = document.getElementById('progressChart');
+    if (!ctx) return;
 
-            async function initDashboard() {
-                let data = MOCK_DATA;
-                try {
-                    const response = await fetch('/api/dashboard-data/');
-                    if (response.ok) {
-                        const jsonData = await response.json();
-                        if(jsonData.user) data = jsonData; 
-                    }
-                } catch (error) { console.error("Network error. Using mock data."); }
-                renderDashboard(data);
-            }
-
-            function renderDashboard(data) {
-                document.getElementById('welcome-name').textContent = data.user.firstName;
-                document.getElementById('header-name').textContent = data.user.firstName;
-                document.getElementById('header-initial').textContent = data.user.firstName.charAt(0);
-                
-                const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-                document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
-
-                if (data.appointment) {
-                    document.getElementById('appt-therapy').textContent = data.appointment.therapy;
-                    document.getElementById('appt-therapist').textContent = data.appointment.therapist;
-                    document.getElementById('appt-date').textContent = data.appointment.date;
-                    document.getElementById('appt-month').textContent = data.appointment.month;
-                    document.getElementById('appt-time').textContent = data.appointment.time;
-                    document.getElementById('appt-period').textContent = data.appointment.period;
-                }
-
-                const notesContainer = document.getElementById('recent-notes-container');
-                notesContainer.innerHTML = '';
-                if (data.notes && data.notes.length > 0) {
-                    data.notes.forEach(note => {
-                        const html = `
-                        <div class="dashboard-note-item">
-                            <div class="dashboard-note-date-box">
-                                <span class="dashboard-note-date-month">${note.month}</span>
-                                <strong class="dashboard-note-date-day">${note.day}</strong>
-                            </div>
-                            <div class="dashboard-note-content">
-                                <h5>${note.title}</h5>
-                                <p>${note.preview}</p>
-                                <a href="#" class="dashboard-note-link">Read full note</a>
-                            </div>
-                        </div>`;
-                        notesContainer.innerHTML += html;
-                    });
-                } else {
-                    notesContainer.innerHTML = '<p class="muted" style="text-align:center; padding:10px;">No recent notes found.</p>';
-                }
-                initChart(data.progress);
-            }
-
-            function initChart(progressData) {
-                const ctx = document.getElementById('progressChart').getContext('2d');
-                let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.5)'); 
-                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: progressData.labels,
-                        datasets: [{
-                            label: 'Vitality Score',
-                            data: progressData.data,
-                            borderColor: '#78350f',
-                            backgroundColor: gradient,
-                            borderWidth: 2,
-                            pointBackgroundColor: '#FFD700',
-                            pointBorderColor: '#78350f',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, max: 100, grid: { borderDash: [5, 5], color: '#e0e0e0' } }, x: { grid: { display: false } } }
-                    }
-                });
-            }
-
-            initDashboard();
-        });
-
-        /* =========================================
-           2. NOTIFICATION POPUP LOGIC (Global)
-           ========================================= */
-        let isNotifyOpen = false;
-
-        function toggleNotifyPopup() {
-            const popup = document.getElementById('notifyPopup');
-            isNotifyOpen = !isNotifyOpen;
-            if (isNotifyOpen) {
-                popup.classList.add('notify-is-visible');
-                fetchNotifyData();
-            } else {
-                popup.classList.remove('notify-is-visible');
-            }
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Week 1','Week 2','Week 3','Week 4','Week 5'],
+            datasets: [{
+                label: 'Recovery Score',
+                data: [45, 50, 55, 63, 72],
+                borderColor: '#78350f',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true
         }
+    });
+});
 
-        // Close on click outside
-        document.addEventListener('click', function(event) {
-            const wrapper = document.querySelector('.notify-wrapper');
-            if (wrapper && !wrapper.contains(event.target)) {
-                document.getElementById('notifyPopup').classList.remove('notify-is-visible');
-                isNotifyOpen = false;
-            }
-        });
-
-        function fetchNotifyData() {
-            // Mock Notification Data
-            const mockNotifs = [
-                { id: 1, type: 'session', title: "Upcoming Session", message: "Shirodhara starts in 2 hours.", time: "10 mins ago", isRead: false, link: "#" },
-                { id: 2, type: 'alert', title: "Symptom Alert", message: "Please check post-care instructions.", time: "1 hour ago", isRead: false, link: "#" },
-                { id: 3, type: 'precaution', title: "Hydration", message: "Drink warm water before your session.", time: "2 hours ago", isRead: true, link: "#" }
-            ];
-
-            // Simulate fetch
-            // In real app: fetch('/api/notifications/').then(res => res.json())...
-            renderNotifyPopup(mockNotifs);
-        }
-
-        function renderNotifyPopup(data) {
-            const container = document.getElementById('notify-content');
-            const badge = document.getElementById('notify-badge');
-            container.innerHTML = '';
-
-            if (!data || data.length === 0) {
-                container.innerHTML = '<div style="padding:30px; text-align:center; color:#ccc; font-style:italic;">No notifications</div>';
-                badge.style.display = 'none';
-                return;
-            }
-
-            const unreadCount = data.filter(n => !n.isRead).length;
-            if(unreadCount > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-            } else {
-                badge.style.display = 'none';
-            }
-
-            data.forEach(item => {
-                let iconClass = 'fa-bell';
-                let typeClass = 'notify-color-msg';
-                
-                if(item.type === 'session') { iconClass = 'fa-calendar-check'; typeClass = 'notify-color-session'; }
-                else if(item.type === 'alert') { iconClass = 'fa-exclamation-triangle'; typeClass = 'notify-color-alert'; }
-                else if(item.type === 'precaution') { iconClass = 'fa-glass-water'; typeClass = 'notify-color-precaution'; }
-
-                const html = `
-                <div class="notify-list-item ${item.isRead ? '' : 'notify-state-unread'}">
-                    <div class="notify-type-icon ${typeClass}">
-                        <i class="fas ${iconClass}"></i>
-                    </div>
-                    <div class="notify-item-text">
-                        <h4>${item.title}</h4>
-                        <p>${item.message}</p>
-                        <span class="notify-timestamp">${item.time}</span>
-                    </div>
-                </div>`;
-                container.innerHTML += html;
-            });
-        }
-
-        function markAllNotifyRead() {
-            alert("All marked as read (Mock Action)");
-            document.getElementById('notify-badge').style.display = 'none';
-            const items = document.querySelectorAll('.notify-list-item');
-            items.forEach(i => i.classList.remove('notify-state-unread'));
-        }
+        
     </script>
 
 </body>

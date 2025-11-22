@@ -1,16 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billing & Payments | Panchkalpa</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
+
+    <link rel="stylesheet" href="{% static 'css/billing.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/billing.css">
 </head>
 
 <body>
@@ -18,166 +16,95 @@
     <!-- NAVBAR -->
     <nav class="dashboard-navbar-container">
         <div class="dashboard-logo-wrapper">
-            <img src="/static/assets/panchkalpa-logo-trans.png" alt="Panchkalpa">
+            <img src="{% static 'assets/panchkalpa-logo-trans.png' %}">
         </div>
         <div class="dashboard-nav-links-group">
-            <a href="dashboard.html" class="dashboard-nav-item-button"><i class="fa-brands fa-dashcube"></i> Dashboard</a>
-            <a href="appointments.html" class="dashboard-nav-item-button"><i class="fa-solid fa-video"></i> Appointments</a>
-            <a href="progress.html" class="dashboard-nav-item-button"><i class="fa-regular fa-calendar-check"></i> Progress</a>
-            <a href="billing.html" class="dashboard-nav-item-button active"><i class="fa-solid fa-file-invoice"></i> Billing</a>
-                        <a href="teleconsult.html" class="dashboard-nav-item-button"><i class="fa-solid fa-headset"></i> Tele-Consult</a>
-
-        </div>
-        <div class="dashboard-nav-profile-section">
-            <div class="dashboard-profile-summary-pill" onclick="window.location.href='profile.html'">
-                <div class="dashboard-profile-icon-circle" id="header-initial">?</div>
-                <div class="dashboard-profile-name-text" id="header-name">Loading...</div>
-            </div>
-            <button class="dashboard-logout-action" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+            <a href="{% url 'dashboard' %}" class="dashboard-nav-item-button">
+                <i class="fa-brands fa-dashcube"></i> Dashboard
+            </a>
+            <a href="{% url 'appointments' %}" class="dashboard-nav-item-button">
+                <i class="fa-solid fa-video"></i> Appointments
+            </a>
+            <a href="#" class="dashboard-nav-item-button">
+                <i class="fa-solid fa-file-invoice"></i> Billing
+            </a>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <div class="billing-main-container">
-        
+
         <div class="billing-page-header">
             <h1 class="billing-page-title">Billing & Payments</h1>
         </div>
 
-        <!-- 1. PENDING BILLS -->
+        <!-- Pending Bills -->
         <div class="billing-content-card">
             <div class="billing-card-header">
-                <i class="fas fa-file-invoice-dollar" style="color:var(--theme-gold-dark)"></i> Pending Bills
+                <i class="fas fa-file-invoice-dollar"></i> Pending Bills
             </div>
-            
-            <div class="billing-pending-list" id="pending-bills-container">
-                <!-- JS Injected -->
-                <div class="billing-empty-state">Checking for pending bills...</div>
+
+            <div class="billing-pending-list">
+                {% if pending %}
+                    {% for bill in pending %}
+                        <div class="billing-pending-item">
+                            <div class="billing-info-group">
+                                <h4>Invoice #{{ bill.invoice_id }}</h4>
+                                <p>{{ bill.therapy }}</p>
+                            </div>
+
+                            <div class="billing-amount-box">
+                                <span class="billing-price">₹{{ bill.amount }}</span>
+                                <a href="{% url 'pay_bill' bill.invoice_id %}" class="billing-pay-btn">
+                                    Pay Now <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="billing-empty-state">No pending bills</div>
+                {% endif %}
             </div>
         </div>
 
-        <!-- 2. PAYMENT HISTORY -->
+        <!-- Payment History -->
         <div class="billing-content-card">
             <div class="billing-card-header">
-                <i class="fas fa-history" style="color:var(--theme-gold-dark)"></i> Payment History
+                <i class="fas fa-history"></i> Payment History
             </div>
-            
-            <div class="billing-table-wrapper">
-                <table class="billing-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Invoice ID</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-bills-container">
-                        <!-- JS Injected -->
-                    </tbody>
-                </table>
-            </div>
+
+            <table class="billing-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice ID</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% if history %}
+                    {% for bill in history %}
+                    <tr>
+                        <td>{{ bill.date }}</td>
+                        <td>#{{ bill.invoice_id }}</td>
+                        <td>{{ bill.therapy }}</td>
+                        <td>₹{{ bill.amount }}</td>
+                        <td><span class="billing-status-badge status-paid">Paid</span></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="billing-empty-state">No payment history</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+
+            </table>
         </div>
 
     </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchBillingData();
-            
-            // Header User Logic (Mock)
-            const user = { name: "Aniket" };
-            document.getElementById('header-name').textContent = user.name;
-            document.getElementById('header-initial').textContent = user.name.charAt(0);
-        });
-
-        async function fetchBillingData() {
-            // Default Mock Data
-            let data = {
-                pending: [
-                    { id: "INV-1234", description: "Shirodhara Session (Nov 22)", amount: 500 },
-                    { id: "INV-2234", description: "Virechana Medicine Kit", amount: 750 }
-                ],
-                history: [
-                    { date: "Nov 15, 2025", id: "INV-1221", description: "Consultation Fee", amount: 300, status: "Paid" },
-                    { date: "Nov 10, 2025", id: "INV-1109", description: "Abhyanga Therapy", amount: 1200, status: "Paid" }
-                ]
-            };
-
-            try {
-                // Try Backend
-                const response = await fetch('/api/patient/billing/', { method: 'GET' });
-                if (response.ok) {
-                    const backendData = await response.json();
-                    data = backendData;
-                }
-            } catch (error) {
-                console.warn("Backend offline, using mock billing data.");
-            }
-
-            renderBilling(data);
-        }
-
-        function renderBilling(data) {
-            // Render Pending
-            const pendingContainer = document.getElementById('pending-bills-container');
-            pendingContainer.innerHTML = '';
-
-            if (data.pending.length === 0) {
-                pendingContainer.innerHTML = '<div class="billing-empty-state">You have no pending bills. Great!</div>';
-            } else {
-                data.pending.forEach(bill => {
-                    const html = `
-                    <div class="billing-pending-item">
-                        <div class="billing-info-group">
-                            <h4>Bill #${bill.id}</h4>
-                            <p>${bill.description}</p>
-                        </div>
-                        <div class="billing-amount-box">
-                            <span class="billing-price">₹${bill.amount}</span>
-                            <button class="billing-pay-btn" onclick="payBill('${bill.id}')">
-                                Pay Now <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>`;
-                    pendingContainer.innerHTML += html;
-                });
-            }
-
-            // Render History
-            const historyContainer = document.getElementById('history-bills-container');
-            historyContainer.innerHTML = '';
-
-            if (data.history.length === 0) {
-                historyContainer.innerHTML = '<tr><td colspan="6" class="billing-empty-state">No payment history found.</td></tr>';
-            } else {
-                data.history.forEach(bill => {
-                    const html = `
-                    <tr>
-                        <td>${bill.date}</td>
-                        <td><strong>#${bill.id}</strong></td>
-                        <td>${bill.description}</td>
-                        <td>₹${bill.amount}</td>
-                        <td><span class="billing-status-badge status-paid">${bill.status}</span></td>
-                        <td><a href="#" class="billing-action-link" onclick="viewReceipt('${bill.id}')">View Receipt</a></td>
-                    </tr>`;
-                    historyContainer.innerHTML += html;
-                });
-            }
-        }
-
-        function payBill(id) {
-            // Integrate Payment Gateway Logic Here (Razorpay/Stripe)
-            alert(`Initiating payment for Bill ${id}...`);
-        }
-
-        function viewReceipt(id) {
-            alert(`Opening receipt for Bill ${id}...`);
-        }
-    </script>
 
 </body>
 </html>

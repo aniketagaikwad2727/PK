@@ -52,8 +52,8 @@ class SignupAPI(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginAPI(APIView):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = []  
+    permission_classes = []       
 
     def post(self, request):
         data = request.data
@@ -61,27 +61,15 @@ class LoginAPI(APIView):
         email = data.get("email")
         password = data.get("password")
 
-        print("=== LOGIN DEBUG ===")
-        print("Email:", email)
-        print("Password:", password)
-
-        # 🔥 Step 1: User ko manually fetch karo
-        try:
-            user = User.objects.get(username=email)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=400)
-
-        # 🔥 Step 2: Password manually check karo
-        if not user.check_password(password):
-            print("❌ Password mismatch")
-            return Response({"error": "Invalid password"}, status=400)
-
-        print("✅ Password matched")
+        user = authenticate(username=email, password=password)
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=400)
 
         login(request, user)
         role = user.profile.role
 
         return Response({"message": "Login successful", "role": role})
+
 
 
 from django.contrib.auth.decorators import login_required
