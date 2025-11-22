@@ -20,34 +20,68 @@ def auth_page(request):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SignupAPI(APIView):
-    authentication_classes = []   # 🔥 CSRF Disabled for API
-    permission_classes = []       # 🔥 Allow all
+    authentication_classes = []
+    permission_classes = []
 
     def post(self, request):
         data = request.data
 
-        name = data.get("full_name") or ""
+        full_name = data.get("full_name")
         email = data.get("email")
         password = data.get("password")
         role = data.get("role", "patient")
 
-        if not email or not password:
-            return Response({"error": "Email & Password required"}, status=400)
+        if not full_name or not email or not password:
+            return Response({"error": "Missing required fields"}, status=400)
 
         if User.objects.filter(username=email).exists():
             return Response({"error": "Email already exists"}, status=400)
 
-        user = User.objects.create_user(username=email, email=email, password=password)
-        user.first_name = name
-        user.save()
+        # Create Django user
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=full_name
+        )
 
+        # Create UserProfile
         UserProfile.objects.create(
             user=user,
-            full_name=name,
+            full_name=full_name,
             role=role,
         )
 
-        return Response({"message": "Account created successfully"}, status=201)
+        # =============================
+        # STORE PATIENT DATA
+        # =============================
+        if role == "patient":
+            Patient.objects.create(
+                user=user,
+                full_name=full_name,
+                email=email,
+                date_of_birth=data.get("dob"),
+                gender=data.get("gender"),
+                address=data.get("address"),
+                allergies=data.get("allergies"),
+            )
+
+        # =============================
+        # STORE THERAPIST DATA
+        # =============================
+        elif role == "therapist":
+            Therapist.objects.create(
+                user=user,
+                name=full_name,
+                email=email,
+                dob=data.get("dob"),
+                experience=data.get("experience"),
+                license_no=data.get("license_no"),
+                qualification=data.get("qualification"),
+                expertise=",".join(data.get("expertise", [])),
+            )
+
+        return Response({"message": "Account created successfully!"}, status=201)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

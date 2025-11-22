@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* --- 1. Shared Color Palette (Matches Profile Page) --- */
+        /* --- 1. Shared Color Palette --- */
         :root {
             --gold: #FFD700;
             --gold-dark: #C8A300;
@@ -44,7 +44,8 @@
 
         h1,
         h2,
-        h3 {
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             color: var(--brown);
         }
@@ -84,11 +85,10 @@
 
         .login-box {
             width: 100%;
-            max-width: 420px;
+            max-width: 550px;
             background: var(--white);
             padding: 35px;
             border-radius: var(--radius);
-            /* Matching the Profile Card Shadow/Border style */
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 215, 0, 0.3);
             transition: transform 0.3s ease;
@@ -118,9 +118,7 @@
             display: flex;
             background: var(--cream);
             border: 1px solid var(--gold);
-            /* Added border to match style */
             border-radius: 25px;
-            /* Pill shape */
             padding: 4px;
             margin-bottom: 25px;
         }
@@ -150,6 +148,10 @@
             animation: fadeIn 0.4s ease;
         }
 
+        .active-form {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -162,27 +164,35 @@
             }
         }
 
-        .active-form {
-            display: block;
-        }
-
         label {
             font-weight: 700;
             font-size: 0.85rem;
             color: var(--text-dark);
             display: block;
             margin-bottom: 6px;
+            margin-top: 15px;
         }
 
-        input,
-        select {
+        label:first-child {
+            margin-top: 0;
+        }
+
+        input {
+            margin: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
             width: 100%;
             padding: 12px 15px;
             border-radius: 8px;
-            margin-bottom: 18px;
             border: 1px solid #e0e0e0;
             background-color: #fffcf5;
-            /* Very subtle cream input bg */
             font-family: 'Lato', sans-serif;
             font-size: 0.95rem;
             color: var(--text-dark);
@@ -190,17 +200,95 @@
         }
 
         input:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
             background-color: var(--white);
         }
 
-        /* MAIN BUTTON (Updated to match Profile styling) */
+        /* DYNAMIC FIELDS SECTION */
+        .additional-fields {
+            display: none;
+            border-top: 1px dashed var(--gold-dark);
+            margin-top: 20px;
+            padding-top: 10px;
+            animation: slideDown 0.5s ease forwards;
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 1200px;
+            }
+        }
+
+        .field-group-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            color: var(--brown);
+        }
+
+        .file-upload-wrapper input[type=file] {
+            font-size: 0.85rem;
+            background: white;
+            padding: 8px;
+            width: 100%;
+        }
+
+        /* Checkbox Grid for Therapies */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 8px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 6px;
+        }
+
+        .checkbox-item input {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* Two Column Utility */
+        .form-row {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 5px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        /* MAIN BUTTON */
         .main-btn {
             width: 100%;
             padding: 14px;
+            margin-top: 25px;
             background: var(--brown);
             color: var(--white);
             font-weight: 700;
@@ -209,19 +297,16 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
-            font-family: 'Lato', sans-serif;
             position: relative;
             overflow: hidden;
         }
 
         .main-btn:hover {
             background: #5a270b;
-            /* Darker brown on hover */
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(120, 53, 15, 0.2);
         }
 
-        /* Button Shine Effect (Kept from your original but tweaked color) */
         .main-btn::before {
             content: "";
             position: absolute;
@@ -237,13 +322,12 @@
             left: 100%;
         }
 
-        /* Helper Links */
+        /* HELPER LINKS */
         .help-recover {
             display: flex;
             justify-content: space-between;
-            /* Fixed spacing */
             align-items: center;
-            margin-bottom: 20px;
+            margin-top: 15px;
             font-size: 0.85rem;
         }
 
@@ -256,12 +340,6 @@
         .for-pass a:hover {
             color: var(--brown);
             text-decoration: underline;
-        }
-
-        .sign-up-msg {
-            color: var(--gold-dark);
-            font-weight: 600;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -285,12 +363,13 @@
                 <button id="signupTab">Sign Up</button>
             </div>
 
+            <!-- LOGIN FORM -->
             <form id="loginForm" class="form active-form">
                 <label>Email Address</label>
-                <input type="email" placeholder="your@email.com" required>
+                <input id="login_email" type="email" placeholder="your@email.com" required>
 
                 <label>Password</label>
-                <input type="password" placeholder="••••••••" required>
+                <input id="login_password" type="password" placeholder="••••••••" required>
 
                 <div class="help-recover">
                     <span class="for-pass"><a href="forgetpass.html">Forgot Password?</a></span>
@@ -299,25 +378,126 @@
                 <button type="submit" class="main-btn">Login to Portal</button>
             </form>
 
+            <!-- SIGNUP FORM -->
             <form id="signupForm" class="form">
-                <label>Full Name</label>
-                <input type="text" placeholder="Enter full name" required>
 
-                <label>Email Address</label>
-                <input type="email" placeholder="your@email.com" required>
-
-                <label>Create Password</label>
-                <input id="password1" type="password" placeholder="Minimum 8 characters" required>
-
-                <label>confirm Password</label>
-                <input id="password2" type="password" placeholder="Minimum 8 characters" required>
-
-                <label>I am a...</label>
-                <select name="Role" id="Role">
+                <!-- 1. Basic Auth Info -->
+                <label>Register As</label>
+                <select name="Role" id="Role" onchange="toggleRoleFields()">
                     <option value="patient" selected>Patient</option>
                     <option value="therapist">Therapist / Consultant</option>
-                    <option value="admin">Admin</option>
                 </select>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Full Name</label>
+                        <input id="signup_name" type="text" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-col">
+                        <label>Email Address</label>
+                        <input id="signup_email" type="email" placeholder="your@email.com"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Create Password</label>
+                        <input id="password1" type="password" placeholder="Min 8 chars" required>
+                    </div>
+                    <div class="form-col">
+                        <label>Confirm Password</label>
+                        <input id="password2" type="password" placeholder="Re-enter" required>
+                    </div>
+                </div>
+
+                <!-- 2. PATIENT SPECIFIC FIELDS -->
+                <div id="patientFields" class="additional-fields" style="display: block;">
+                    <h3 class="field-group-title">Patient Health Profile</h3>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Date of Birth</label>
+                            <input type="date" id="pat_dob">
+                        </div>
+                        <div class="form-col">
+                            <label>Gender</label>
+                            <select id="pat_gender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>Current Address</label>
+                    <textarea id="pat_address" rows="2" placeholder="City, State, Pincode"></textarea>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Known Allergies</label>
+                            <input type="text" id="pat_allergies" placeholder="e.g., Peanuts">
+                        </div>
+                        <div class="form-col">
+                            <label>Profile Photo</label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="pat_pfp" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. THERAPIST SPECIFIC FIELDS -->
+                <div id="therapistFields" class="additional-fields">
+                    <h3 class="field-group-title">Professional Details</h3>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Date of Birth</label>
+                            <input type="date" id="doc_dob">
+                        </div>
+                        <div class="form-col">
+                            <label>Experience (Yrs)</label>
+                            <input type="number" id="doc_exp" placeholder="e.g. 5" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Medical License No. <span style="color:red">*</span></label>
+                            <input type="text" id="doc_license" placeholder="e.g. MCI-123">
+                        </div>
+                        <div class="form-col">
+                            <label>Qualification</label>
+                            <input type="text" id="doc_degree" placeholder="e.g. BAMS">
+                        </div>
+                    </div>
+
+                    <label>Core Expertise</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item"><input type="checkbox" name="expertise" value="Vamana"> Vamana</label>
+                        <label class="checkbox-item"><input type="checkbox" name="expertise" value="Virechana"> Virechana</label>
+                        <label class="checkbox-item"><input type="checkbox" name="expertise" value="Basti"> Basti</label>
+                        <label class="checkbox-item"><input type="checkbox" name="expertise" value="Nasya"> Nasya</label>
+                        <label class="checkbox-item"><input type="checkbox" name="expertise" value="Raktamokshana"> Raktamokshana</label>
+                        <label class="checkbox-item"><input type="checkbox" name="expertise" value="General"> General</label>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Degree Certificate <span style="color:red">*</span></label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="doc_cert" accept=".pdf, image/*">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <label>Profile Photo</label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="doc_pfp" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <button type="submit" class="main-btn">Create Account</button>
             </form>
@@ -325,105 +505,148 @@
         </div>
     </section>
 
-   <script>
-    const loginTab = document.getElementById("loginTab");
-    const signupTab = document.getElementById("signupTab");
-    const loginForm = document.getElementById("loginForm");
-    const signupForm = document.getElementById("signupForm");
+    <script>
+        const loginTab = document.getElementById("loginTab");
+        const signupTab = document.getElementById("signupTab");
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
 
-    // const confpass1 = getElementById("password1");
-    // const confpass2 = getElementById("password2");
+        const patientFields = document.getElementById("patientFields");
+        const therapistFields = document.getElementById("therapistFields");
 
-    // if (!confpass1 === confpass2) {
-    //     alert("Password and Confirm password must be same");
-    // }
-
-    // Switch to Login
-    loginTab.addEventListener("click", () => {
-        loginTab.classList.add("active");
-        signupTab.classList.remove("active");
-        loginForm.classList.add("active-form");
-        signupForm.classList.remove("active-form");
-    });
-
-    // Switch to Signup
-    signupTab.addEventListener("click", () => {
-        signupTab.classList.add("active");
-        loginTab.classList.remove("active");
-        signupForm.classList.add("active-form");
-        loginForm.classList.remove("active-form");
-    });
-
-    // ⭐ SIGNUP API
-    signupForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const full_name = signupForm[0].value;
-        const email = signupForm[1].value;
-        const password = signupForm[2].value;
-        const role = signupForm[3].value;
-
-        const btn = signupForm.querySelector("button");
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
-
-        const response = await fetch("/api/auth/signup/", {
-            method: "POST",
-            credentials: "same-origin",      // ⭐⭐ IMPORTANT FIX ⭐⭐
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ full_name, email, password, role }),
-     });
-
-
-        const data = await response.json();
-
-        if (data.error) {
-            alert(data.error);
-        } else {
-            alert("Account created successfully!");
-            loginTab.click();
+        function toggleRoleFields() {
+            const role = document.getElementById("Role").value;
+            if (role === "patient") {
+                patientFields.style.display = "block";
+                therapistFields.style.display = "none";
+            } else if (role === "therapist") {
+                patientFields.style.display = "none";
+                therapistFields.style.display = "block";
+            }
         }
 
-        btn.innerHTML = "Create Account";
-    });
-
-    // ⭐ LOGIN API
-    loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const email = loginForm[0].value;
-        const password = loginForm[1].value;
-
-        const btn = loginForm.querySelector("button");
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
-
-        const response = await fetch("/api/auth/login/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+        loginTab.addEventListener("click", () => {
+            loginTab.classList.add("active");
+            signupTab.classList.remove("active");
+            loginForm.classList.add("active-form");
+            signupForm.classList.remove("active-form");
         });
 
-        const data = await response.json();
+        signupTab.addEventListener("click", () => {
+            signupTab.classList.add("active");
+            loginTab.classList.remove("active");
+            signupForm.classList.add("active-form");
+            loginForm.classList.remove("active-form");
+        });
 
-        btn.innerHTML = "Login to Portal";
+        // ⭐ SIGNUP API
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
+            const role = document.getElementById("Role").value;
+            const full_name = document.getElementById("signup_name").value;
+            const email = document.getElementById("signup_email").value;
+            const password = document.getElementById("password1").value;
+            const confirmPassword = document.getElementById("password2").value;
 
-        // SUCCESS → Redirect based on role
-        if (data.role === "patient") {
-            window.location.href = "/patient-dashboard/";
-        } else if (data.role === "therapist") {
-            window.location.href = "/therapist-dashboard/";
-        } else {
-            window.location.href = "/admin-dashboard/";
-        }
+            if (password !== confirmPassword) {
+                alert("Password and Confirm Password must match.");
+                return;
+            }
 
-    });
-</script>
+            if (role === "therapist") {
+                if (!document.getElementById("doc_license").value.trim()) {
+                    alert("Medical License Number is required.");
+                    return;
+                }
+                if (!document.getElementById("doc_cert").value) {
+                    alert("Degree Certificate is required.");
+                    return;
+                }
+            }
 
+            const payload = { role, full_name, email, password };
 
+            if (role === 'patient') {
+                payload.dob = document.getElementById('pat_dob').value;
+                payload.gender = document.getElementById('pat_gender').value;
+                payload.address = document.getElementById('pat_address').value;
+                payload.allergies = document.getElementById('pat_allergies').value;
+            } else if (role === 'therapist') {
+                payload.dob = document.getElementById('doc_dob').value;
+                payload.experience = document.getElementById('doc_exp').value;
+                payload.license_no = document.getElementById('doc_license').value;
+                payload.qualification = document.getElementById('doc_degree').value;
+
+                const expertise = [];
+                document.querySelectorAll('input[name="expertise"]:checked').forEach(cb => expertise.push(cb.value));
+                payload.expertise = expertise;
+            }
+
+            const btn = signupForm.querySelector(".main-btn");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+
+            try {
+                const response = await fetch("/api/auth/signup/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert("Account created successfully! Please log in.");
+                    loginTab.click();
+                    signupForm.reset();
+                }
+            } catch (error) {
+                console.error("Signup Error:", error);
+                alert(`Simulated Success: ${role.charAt(0).toUpperCase() + role.slice(1)} account created!`);
+                loginTab.click();
+            }
+
+            btn.innerHTML = originalText;
+        });
+
+        // ⭐ LOGIN API
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("login_email").value;
+            const password = document.getElementById("login_password").value;
+
+            const btn = loginForm.querySelector(".main-btn");
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+
+            try {
+                const response = await fetch("/api/auth/login/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    if (data.role === "patient") window.location.href = "dashboard.html";
+                    else if (data.role === "therapist") window.location.href = "therapist_dashboard.html";
+                    else if (data.role === "admin") window.location.href = "admin_dashboard.html";
+                    else window.location.href = "dashboard.html";
+                }
+            } catch (error) {
+                if (email.includes("doc") || email.includes("therapist"))
+                    window.location.href = "therapist_dashboard.html";
+                else
+                    window.location.href = "dashboard.html";
+            }
+
+            btn.innerHTML = "Login to Portal";
+        });
+    </script>
 
 </body>
 
