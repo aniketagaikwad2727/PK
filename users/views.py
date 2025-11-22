@@ -12,6 +12,8 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 
 from .models import UserProfile
+from patients.models import Patient, Therapist
+
 
 
 def auth_page(request):
@@ -31,13 +33,17 @@ class SignupAPI(APIView):
         password = data.get("password")
         role = data.get("role", "patient")
 
-        if not full_name or not email or not password:
-            return Response({"error": "Missing required fields"}, status=400)
+        dob = data.get("dob")
+        gender = data.get("gender")
+        address = data.get("address")
+        allergies = data.get("allergies")
+
+        if not email or not password or not full_name:
+            return Response({"error": "Required fields missing"}, status=400)
 
         if User.objects.filter(username=email).exists():
             return Response({"error": "Email already exists"}, status=400)
 
-        # Create Django user
         user = User.objects.create_user(
             username=email,
             email=email,
@@ -45,44 +51,41 @@ class SignupAPI(APIView):
             first_name=full_name
         )
 
-        # Create UserProfile
         UserProfile.objects.create(
             user=user,
             full_name=full_name,
-            role=role,
+            role=role
         )
 
-        # =============================
-        # STORE PATIENT DATA
-        # =============================
+        # Save PATIENT data
         if role == "patient":
             Patient.objects.create(
                 user=user,
                 full_name=full_name,
                 email=email,
-                date_of_birth=data.get("dob"),
-                gender=data.get("gender"),
-                address=data.get("address"),
-                allergies=data.get("allergies"),
+                gender=gender,
+                address=address,
+                allergies=allergies,
+                date_of_birth=dob
             )
 
-        # =============================
-        # STORE THERAPIST DATA
-        # =============================
+        # Save THERAPIST data
         elif role == "therapist":
+            expertise_list = data.get("expertise", [])
+            expertise_str = ",".join(expertise_list)
+
             Therapist.objects.create(
                 user=user,
                 name=full_name,
                 email=email,
-                dob=data.get("dob"),
+                dob=dob,
                 experience=data.get("experience"),
                 license_no=data.get("license_no"),
                 qualification=data.get("qualification"),
-                expertise=",".join(data.get("expertise", [])),
+                expertise=expertise_str,
             )
 
         return Response({"message": "Account created successfully!"}, status=201)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginAPI(APIView):
