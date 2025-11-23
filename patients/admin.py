@@ -1,18 +1,7 @@
 from django.contrib import admin
-from .models import (
-    Patient,
-    Therapy,
-    Therapist,
-    PatientAppointment,
-    TherapistAppointment,
-    Notification,
-    Billing
-)
+from .models import Patient
 
-admin.site.register(Patient)
-admin.site.register(Therapy)
-admin.site.register(Therapist)
-admin.site.register(PatientAppointment)
-admin.site.register(TherapistAppointment)
-admin.site.register(Notification)
-admin.site.register(Billing)
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "email", "gender", "date_of_birth")
+    search_fields = ("full_name", "email")

@@ -439,10 +439,8 @@
                             <input type="text" id="pat_allergies" placeholder="e.g., Peanuts">
                         </div>
                         <div class="form-col">
-                            <label>Profile Photo</label>
-                            <div class="file-upload-wrapper">
-                                <input type="file" id="pat_pfp" accept="image/*">
-                            </div>
+                            <label>Contact Number</label>
+                            <input type="text" id="pat_contact_number" placeholder="e.g., +915234567890">
                         </div>
                     </div>
                 </div>
@@ -632,16 +630,19 @@
                 if (data.error) {
                     alert(data.error);
                 } else {
-                    if (data.role === "patient") window.location.href = "dashboard.html";
+                    if (data.role === "patient") window.location.href = "/patient/dashboard/";
+
                     else if (data.role === "therapist") window.location.href = "therapist_dashboard.html";
                     else if (data.role === "admin") window.location.href = "admin_dashboard.html";
-                    else window.location.href = "dashboard.html";
+                    else window.location.href = "/patient/dashboard/";
+
                 }
             } catch (error) {
                 if (email.includes("doc") || email.includes("therapist"))
                     window.location.href = "therapist_dashboard.html";
                 else
-                    window.location.href = "dashboard.html";
+                    window.location.href = "/patient/dashboard/";
+
             }
 
             btn.innerHTML = "Login to Portal";

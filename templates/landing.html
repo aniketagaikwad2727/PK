@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en">
 
@@ -418,7 +420,7 @@
             <li class="nav-item"><a href="#therapies">Therapies</a></li>
             <li class="nav-item"><a href="#contact">Contact</a></li>
             <li class="nav-item" style="margin-top: 20px;">
-            <a href="{% url 'auth-page' %}" class="btn-cta text-center w-100 justify-content-center">Login</a>
+            <a href="{% url 'auth-page' %}" class="btn-cta text-center w-100">Login</a>
 
             </li>
         </ul>
@@ -519,8 +521,7 @@
             <div class="row g-4">
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
                     <div class="card card-therapy">
-                        <img src="/PK/static/assets/vamana.png" class="w-100" alt="Vamana">
-                        <div class="card-body p-4">
+                        <img src="{% static 'assets/vamana.png' %}">                        <div class="card-body p-4">
                             <h5>Vamana</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2">Therapeutic Emesis</p>
                             <p class="muted small">Medicated emesis to remove Kapha-related toxins from the upper
@@ -531,7 +532,7 @@
 
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
                     <div class="card card-therapy">
-                        <img src="/PK/static/assets/virechna.png" class="w-100" alt="Virechana">
+<img src="{% static 'assets/virechna.png' %}">
                         <div class="card-body p-4">
                             <h5>Virechana</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2">Purgation Therapy</p>
@@ -543,7 +544,7 @@
 
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="300">
                     <div class="card card-therapy">
-                        <img src="/PK/static/assets/basti.png" class="w-100" alt="Basti">
+<img src="{% static 'assets/basti.png' %}">
                         <div class="card-body p-4">
                             <h5>Basti</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2">Medicated Enema</p>
@@ -555,7 +556,7 @@
 
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
                     <div class="card card-therapy">
-                        <img src="/PK/static/assets/basya.png" class="w-100" alt="Nasya">
+<img src="{% static 'assets/basya.png' %}">
                         <div class="p-3">
                             <h5>Nasya </h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2"> Nasal Administration</p>
@@ -566,7 +567,7 @@
 
                 <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="250">
                     <div class="card card-therapy">
-                        <img src="/PK/static/assets/raktmokshana.png" class="w-100" alt="Raktamokshana">
+<img src="{% static 'assets/raktmokshana.png' %}">
                         <div class="p-3">
                             <h5>Raktamokshana</h5>
                             <p class="small text-uppercase text-warning fw-bold mb-2"> Blood Purification</p>

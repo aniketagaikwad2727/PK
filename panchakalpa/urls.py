@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('login/', auth_page, name='auth-page'),
 
-    # FIXED: API ROUTES
+    # API ROUTES
     path('api/auth/', include('users.urls')),
 
     path('sessions/', include('user_sessions.urls')),
